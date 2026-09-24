@@ -139,7 +139,7 @@
         </div>
 
         <!-- Progress Overview Widget -->
-        <div class="p-4 bg-slate-800/60 border-b border-slate-800">
+        <div id="progressWidget" class="p-4 bg-slate-800/60 border-b border-slate-800">
             <div class="flex justify-between items-center text-xs font-semibold text-slate-300 mb-1.5">
                 <span>Tiến độ học tập</span>
                 <span id="progressText" class="text-brand-400">0/24 (0%)</span>
@@ -150,7 +150,7 @@
         </div>
 
         <!-- Course Materials Links -->
-        <div class="p-4 bg-slate-800/40 border-b border-slate-800 space-y-2">
+        <div id="materialsBlock" class="p-4 bg-slate-800/40 border-b border-slate-800 space-y-2">
             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tài liệu môn học</h3>
             <a href="https://drive.google.com/drive/folders/1JHm2gM9XAbyOVvHmkowBs-IX4DcEoJCl" target="_blank" class="flex items-center gap-2 text-sm text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 p-2 rounded-lg transition">
                 <i class="fa-solid fa-headphones text-brand-400 w-4 text-center"></i> File Nghe (Listening)
@@ -161,13 +161,21 @@
             <a href="https://drive.google.com/drive/folders/1W1gN8Bhvic8krAEk5n7czw5UXchJdyz9" target="_blank" class="flex items-center gap-2 text-sm text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 p-2 rounded-lg transition">
                 <i class="fa-solid fa-file-powerpoint text-orange-400 w-4 text-center"></i> Bài giảng (Slides)
             </a>
-            <button id="adminSubmissionsBtn" onclick="openAdminDashboard()" class="hidden w-full items-center gap-2 text-sm text-purple-200 hover:text-white bg-purple-950/60 hover:bg-purple-900 p-2 rounded-lg transition border border-purple-800">
-                <i class="fa-solid fa-chart-line text-purple-400 w-4 text-center"></i> Dashboard học viên
+        </div>
+
+        <!-- Menu quản trị (chỉ hiện với admin) -->
+        <div id="adminNav" class="hidden p-4 border-b border-slate-800 space-y-2">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Khu vực quản trị</h3>
+            <button data-tab="dash" onclick="showAdminTab('dash')" class="admin-tab-btn w-full flex items-center gap-2 text-sm p-2.5 rounded-lg transition border">
+                <i class="fa-solid fa-chart-line w-4 text-center"></i> Dashboard học viên
+            </button>
+            <button data-tab="editor" onclick="showAdminTab('editor')" class="admin-tab-btn w-full flex items-center gap-2 text-sm p-2.5 rounded-lg transition border">
+                <i class="fa-solid fa-pen-to-square w-4 text-center"></i> Sửa nội dung bài học
             </button>
         </div>
 
         <!-- Search & Filter Controls -->
-        <div class="p-4 space-y-3 border-b border-slate-800">
+        <div id="searchFilterBlock" class="p-4 space-y-3 border-b border-slate-800">
             <div class="relative">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
                 <input type="text" id="searchInput" placeholder="Tìm bài học, chủ đề..." class="w-full bg-slate-800 text-slate-200 text-sm rounded-lg pl-9 pr-3 py-2 border border-slate-700 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 placeholder-slate-500">
@@ -185,7 +193,7 @@
         </div>
 
         <!-- Sidebar Footer -->
-        <div class="p-3 border-t border-slate-800 text-xs text-slate-500 flex items-center justify-between">
+        <div id="sidebarFooter" class="p-3 border-t border-slate-800 text-xs text-slate-500 flex items-center justify-between">
             <span>Online Workbook</span>
             <button id="resetProgressBtn" class="text-slate-400 hover:text-rose-400 transition flex items-center gap-1">
                 <i class="fa-solid fa-rotate-right"></i> Đặt lại
@@ -217,44 +225,58 @@
             </div>
         </header>
 
-        <!-- Lesson Viewport -->
+        <!-- Lesson Viewport (học viên) -->
         <div id="lessonViewport" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 max-w-5xl mx-auto w-full">
             <!-- Dynamic Lesson Content Rendered Here -->
         </div>
 
-    </main>
+        <!-- Khu làm việc của Admin -->
+        <div id="adminWorkspace" class="hidden flex-1 overflow-y-auto bg-slate-100">
 
-    <!-- Admin Dashboard Modal -->
-    <div id="adminModal" class="fixed inset-0 bg-slate-950/70 z-[90] hidden items-center justify-center p-3 md:p-6">
-        <div class="bg-slate-50 rounded-2xl shadow-2xl max-w-5xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-slate-200">
-
-            <!-- Header -->
-            <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white px-6 py-4 flex items-center justify-between shrink-0">
-                <div class="flex items-center gap-3">
-                    <div class="bg-purple-600/30 border border-purple-500/40 p-2.5 rounded-xl">
-                        <i class="fa-solid fa-chart-line text-purple-300"></i>
-                    </div>
+            <!-- Tab: Dashboard -->
+            <section id="adminTabDash" class="p-4 md:p-6 space-y-5">
+                <div class="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                        <h3 class="font-bold text-lg leading-tight">Dashboard quản trị</h3>
-                        <p class="text-xs text-slate-400">Theo dõi quá trình học của học viên</p>
+                        <h2 class="text-xl font-black text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line text-purple-600"></i> Dashboard học viên
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Theo dõi tiến độ, điểm số và hoạt động học tập</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <select id="dashStudentSelect" onchange="renderAdminDashboard()" class="bg-white border border-slate-300 text-slate-800 text-xs font-semibold rounded-lg px-3 py-2 focus:outline-none focus:border-purple-500"></select>
+                        <button onclick="openAdminDashboard()" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-lg px-3 py-2 transition">
+                            <i class="fa-solid fa-rotate"></i> Tải lại
+                        </button>
                     </div>
                 </div>
-                <div class="flex items-center gap-3">
-                    <select id="dashStudentSelect" onchange="renderAdminDashboard()" class="bg-slate-800 border border-slate-600 text-slate-100 text-xs font-semibold rounded-lg px-3 py-2 focus:outline-none focus:border-purple-500"></select>
-                    <button onclick="closeAdminDashboard()" class="text-slate-400 hover:text-white p-2"><i class="fa-solid fa-xmark text-lg"></i></button>
+                <div id="dashBody" class="space-y-5"></div>
+            </section>
+
+            <!-- Tab: Trình sửa nội dung bài học -->
+            <section id="adminTabEditor" class="hidden p-4 md:p-6 space-y-5">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <h2 class="text-xl font-black text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-pen-to-square text-brand-600"></i> Sửa nội dung bài học
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Chỉnh sửa từ vựng, ngữ pháp, mẫu câu và câu hỏi trắc nghiệm</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <select id="editorLessonSelect" onchange="loadLessonIntoEditor()" class="bg-white border border-slate-300 text-slate-800 text-xs font-semibold rounded-lg px-3 py-2 focus:outline-none focus:border-brand-500 max-w-[260px]"></select>
+                        <button onclick="saveLessonFromEditor()" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-lg px-4 py-2 transition shadow-sm">
+                            <i class="fa-solid fa-floppy-disk"></i> Lưu bài học
+                        </button>
+                        <button onclick="resetLessonContent()" class="bg-white border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-semibold rounded-lg px-3 py-2 transition">
+                            <i class="fa-solid fa-rotate-left"></i> Khôi phục gốc
+                        </button>
+                    </div>
                 </div>
-            </div>
-
-            <!-- Body -->
-            <div id="dashBody" class="flex-1 overflow-y-auto p-5 md:p-6 space-y-6"></div>
-
-            <!-- Footer -->
-            <div class="bg-white border-t border-slate-200 px-6 py-3 flex items-center justify-between shrink-0">
-                <p class="text-[11px] text-slate-400"><i class="fa-solid fa-circle-info"></i> Dữ liệu được lưu trên trình duyệt của máy này.</p>
-                <button onclick="closeAdminDashboard()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-xl transition">Đóng</button>
-            </div>
+                <div id="editorStatus" class="hidden text-xs font-semibold px-3 py-2.5 rounded-xl border"></div>
+                <div id="editorBody" class="space-y-5"></div>
+            </section>
         </div>
-    </div>
+
+    </main>
 
     <!-- ============ CẤU HÌNH FIREBASE ============ -->
     <script>
@@ -379,6 +401,23 @@
                             firstActive: (activity && activity.firstActive) || null,
                             updatedAt: serverTimestamp()
                         }, { merge: true });
+                    },
+
+                    /* Nội dung bài học do admin chỉnh sửa */
+                    async saveLessonContent(lessonId, data) {
+                        const ref = doc(db, "courseA1_content", String(lessonId));
+                        if (data === null) await setDoc(ref, { lessonId, deleted: true, updatedAt: serverTimestamp() });
+                        else await setDoc(ref, { lessonId, data, deleted: false, updatedAt: serverTimestamp() });
+                    },
+
+                    async loadAllLessonContent() {
+                        const out = {};
+                        const qs = await getDocs(collection(db, "courseA1_content"));
+                        qs.forEach(x => {
+                            const d = x.data();
+                            if (!d.deleted && d.data) out[String(d.lessonId)] = d.data;
+                        });
+                        return out;
                     },
 
                     async addSubmission(sub) {
@@ -702,27 +741,63 @@
                 "flashcards": [
                     {
                         "front": "Alphabet",
-                        "back": "Bảng chữ cái tiếng Anh (26 chữ cái từ A đến Z)."
+                        "pos": "Danh từ",
+                        "back": "Bảng chữ cái",
+                        "ex": "The English alphabet has 26 letters."
                     },
                     {
-                        "front": "Thirteen (/ˌθɜːrˈtiːn/)",
-                        "back": "Số 13 – trọng âm rơi vào âm tiết cuối -TEEN."
+                        "front": "Letter",
+                        "pos": "Danh từ",
+                        "back": "Chữ cái",
+                        "ex": "The first letter of my name is L."
                     },
                     {
-                        "front": "Thirty (/ˈθɜːrti/)",
-                        "back": "Số 30 – trọng âm rơi vào âm tiết đầu THIR-."
+                        "front": "Spell",
+                        "pos": "Động từ",
+                        "back": "Đánh vần",
+                        "ex": "How do you spell your surname?"
                     },
                     {
-                        "front": "Forty",
-                        "back": "Số 40 – viết KHÔNG có chữ 'u' (sai: fourty)."
+                        "front": "Number",
+                        "pos": "Danh từ",
+                        "back": "Con số",
+                        "ex": "My lucky number is seven."
                     },
                     {
-                        "front": "Double",
-                        "back": "Dùng khi đọc 2 chữ số giống nhau liền nhau: 88 = double eight."
+                        "front": "Vowel",
+                        "pos": "Danh từ",
+                        "back": "Nguyên âm (a, e, i, o, u)",
+                        "ex": "There are five vowels in English."
                     },
                     {
-                        "front": "How do you spell...?",
-                        "back": "Bạn đánh vần ... như thế nào?"
+                        "front": "Consonant",
+                        "pos": "Danh từ",
+                        "back": "Phụ âm",
+                        "ex": "B, C and D are consonants."
+                    },
+                    {
+                        "front": "Capital letter",
+                        "pos": "Danh từ",
+                        "back": "Chữ in hoa",
+                        "ex": "Write your name in capital letters."
+                    },
+                    {
+                        "front": "Phone number",
+                        "pos": "Danh từ",
+                        "back": "Số điện thoại",
+                        "ex": "My phone number is 0912 345 678."
+                    },
+                    {
+                        "front": "Age",
+                        "pos": "Danh từ",
+                        "back": "Tuổi",
+                        "ex": "Her age is twenty-five."
+                    },
+                    {
+                        "front": "Hundred",
+                        "pos": "Danh từ",
+                        "back": "Trăm",
+                        "ex": "One hundred people came."
                     }
                 ],
                 "quiz": [
@@ -955,28 +1030,64 @@
                 ],
                 "flashcards": [
                     {
-                        "front": "I am / I'm",
-                        "back": "Dùng với chủ ngữ I (Tôi là...)"
+                        "front": "Student",
+                        "pos": "Danh từ",
+                        "back": "Học sinh, sinh viên",
+                        "ex": "I am a student at Hanoi University."
                     },
                     {
-                        "front": "He / She / It + IS",
-                        "back": "Dùng với ngôi thứ 3 số ít (Anh ấy / Cô ấy / Nó là...)"
+                        "front": "Teacher",
+                        "pos": "Danh từ",
+                        "back": "Giáo viên",
+                        "ex": "She is my English teacher."
                     },
                     {
-                        "front": "You / We / They + ARE",
-                        "back": "Dùng với số nhiều và You (Bạn / Chúng tôi / Họ là...)"
+                        "front": "Friend",
+                        "pos": "Danh từ",
+                        "back": "Bạn bè",
+                        "ex": "They are my close friends."
                     },
                     {
-                        "front": "Aren't / Isn't",
-                        "back": "Dạng viết tắt phủ định của are not và is not."
+                        "front": "Tired",
+                        "pos": "Tính từ",
+                        "back": "Mệt mỏi",
+                        "ex": "I'm tired after work."
                     },
                     {
-                        "front": "Yes, I am. (NOT Yes, I'm)",
-                        "back": "Câu trả lời ngắn khẳng định không được viết tắt."
+                        "front": "Busy",
+                        "pos": "Tính từ",
+                        "back": "Bận rộn",
+                        "ex": "He isn't busy today."
                     },
                     {
-                        "front": "It's vs Its",
-                        "back": "It's = it is. Its = của nó (tính từ sở hữu)."
+                        "front": "Happy",
+                        "pos": "Tính từ",
+                        "back": "Vui vẻ, hạnh phúc",
+                        "ex": "We are very happy."
+                    },
+                    {
+                        "front": "Ready",
+                        "pos": "Tính từ",
+                        "back": "Sẵn sàng",
+                        "ex": "Are you ready?"
+                    },
+                    {
+                        "front": "Late",
+                        "pos": "Tính từ",
+                        "back": "Muộn, trễ",
+                        "ex": "Sorry, I'm late."
+                    },
+                    {
+                        "front": "From",
+                        "pos": "Giới từ",
+                        "back": "Đến từ",
+                        "ex": "We are from Vietnam."
+                    },
+                    {
+                        "front": "At home",
+                        "pos": "Cụm từ",
+                        "back": "Ở nhà",
+                        "ex": "My parents are at home now."
                     }
                 ],
                 "quiz": [
@@ -1207,27 +1318,63 @@
                 "flashcards": [
                     {
                         "front": "What",
-                        "back": "Dùng để hỏi thông tin, vật, tên (Cái gì? Gì?)"
+                        "pos": "Từ hỏi",
+                        "back": "Cái gì / gì",
+                        "ex": "What is your name?"
                     },
                     {
                         "front": "Where",
-                        "back": "Dùng để hỏi địa điểm, quê quán (Ở đâu?)"
+                        "pos": "Từ hỏi",
+                        "back": "Ở đâu",
+                        "ex": "Where are you from?"
                     },
                     {
-                        "front": "How old",
-                        "back": "Dùng để hỏi tuổi."
+                        "front": "When",
+                        "pos": "Từ hỏi",
+                        "back": "Khi nào",
+                        "ex": "When is your birthday?"
                     },
                     {
                         "front": "Who",
-                        "back": "Dùng để hỏi về người (Ai?)"
+                        "pos": "Từ hỏi",
+                        "back": "Ai",
+                        "ex": "Who is that man?"
                     },
                     {
-                        "front": "How many vs How much",
-                        "back": "How many + danh từ đếm được số nhiều. How much + danh từ không đếm được hoặc hỏi giá."
+                        "front": "Why",
+                        "pos": "Từ hỏi",
+                        "back": "Tại sao",
+                        "ex": "Why are you late?"
+                    },
+                    {
+                        "front": "How",
+                        "pos": "Từ hỏi",
+                        "back": "Như thế nào",
+                        "ex": "How are you?"
+                    },
+                    {
+                        "front": "Which",
+                        "pos": "Từ hỏi",
+                        "back": "Cái nào (trong số có sẵn)",
+                        "ex": "Which bag is yours?"
                     },
                     {
                         "front": "Whose",
-                        "back": "Dùng để hỏi quyền sở hữu (Của ai?)"
+                        "pos": "Từ hỏi",
+                        "back": "Của ai",
+                        "ex": "Whose book is this?"
+                    },
+                    {
+                        "front": "How many",
+                        "pos": "Cụm hỏi",
+                        "back": "Bao nhiêu (đếm được)",
+                        "ex": "How many brothers do you have?"
+                    },
+                    {
+                        "front": "How much",
+                        "pos": "Cụm hỏi",
+                        "back": "Bao nhiêu (không đếm được / giá tiền)",
+                        "ex": "How much is this shirt?"
                     }
                 ],
                 "quiz": [
@@ -1457,28 +1604,64 @@
                 ],
                 "flashcards": [
                     {
-                        "front": "Nice to meet you",
-                        "back": "Rất vui được gặp bạn. – Đáp: Nice to meet you too."
+                        "front": "Hello / Hi",
+                        "pos": "Thán từ",
+                        "back": "Xin chào",
+                        "ex": "Hello! How are you?"
                     },
                     {
-                        "front": "Married",
-                        "back": "Đã kết hôn."
-                    },
-                    {
-                        "front": "Single",
-                        "back": "Độc thân."
-                    },
-                    {
-                        "front": "Good night",
-                        "back": "Chỉ dùng khi chia tay buổi tối hoặc đi ngủ, KHÔNG dùng để chào gặp mặt."
-                    },
-                    {
-                        "front": "an engineer",
-                        "back": "Dùng 'an' vì 'engineer' bắt đầu bằng nguyên âm /e/."
+                        "front": "Name",
+                        "pos": "Danh từ",
+                        "back": "Tên",
+                        "ex": "What's your name?"
                     },
                     {
                         "front": "Surname",
-                        "back": "Họ (Anh–Mỹ đặt ở cuối tên)."
+                        "pos": "Danh từ",
+                        "back": "Họ",
+                        "ex": "My surname is Nguyen."
+                    },
+                    {
+                        "front": "Meet",
+                        "pos": "Động từ",
+                        "back": "Gặp gỡ",
+                        "ex": "Nice to meet you."
+                    },
+                    {
+                        "front": "Address",
+                        "pos": "Danh từ",
+                        "back": "Địa chỉ",
+                        "ex": "What's your address?"
+                    },
+                    {
+                        "front": "Nationality",
+                        "pos": "Danh từ",
+                        "back": "Quốc tịch",
+                        "ex": "My nationality is Vietnamese."
+                    },
+                    {
+                        "front": "Married / Single",
+                        "pos": "Tính từ",
+                        "back": "Đã kết hôn / Độc thân",
+                        "ex": "Are you married or single?"
+                    },
+                    {
+                        "front": "Email address",
+                        "pos": "Danh từ",
+                        "back": "Địa chỉ email",
+                        "ex": "Can I have your email address?"
+                    },
+                    {
+                        "front": "Introduce",
+                        "pos": "Động từ",
+                        "back": "Giới thiệu",
+                        "ex": "Let me introduce my colleague."
+                    },
+                    {
+                        "front": "Goodbye / See you",
+                        "pos": "Thán từ",
+                        "back": "Tạm biệt / Hẹn gặp lại",
+                        "ex": "Goodbye! See you tomorrow."
                     }
                 ],
                 "quiz": [
@@ -1703,28 +1886,64 @@
                 ],
                 "flashcards": [
                     {
-                        "front": "Parents",
-                        "back": "Bố mẹ (luôn ở dạng số nhiều)."
+                        "front": "Family",
+                        "pos": "Danh từ",
+                        "back": "Gia đình",
+                        "ex": "I have a big family."
                     },
                     {
-                        "front": "Children",
-                        "back": "Dạng số nhiều bất quy tắc của 'child' (trẻ con, con cái)."
+                        "front": "Parents",
+                        "pos": "Danh từ",
+                        "back": "Bố mẹ",
+                        "ex": "My parents live in Hue."
+                    },
+                    {
+                        "front": "Brother / Sister",
+                        "pos": "Danh từ",
+                        "back": "Anh (em) trai / Chị (em) gái",
+                        "ex": "I have one brother and two sisters."
+                    },
+                    {
+                        "front": "Son / Daughter",
+                        "pos": "Danh từ",
+                        "back": "Con trai / Con gái",
+                        "ex": "They have one son."
+                    },
+                    {
+                        "front": "Husband / Wife",
+                        "pos": "Danh từ",
+                        "back": "Chồng / Vợ",
+                        "ex": "Her husband is a teacher."
+                    },
+                    {
+                        "front": "Grandparents",
+                        "pos": "Danh từ",
+                        "back": "Ông bà",
+                        "ex": "My grandparents are very kind."
+                    },
+                    {
+                        "front": "Uncle / Aunt",
+                        "pos": "Danh từ",
+                        "back": "Chú, bác trai / Cô, dì",
+                        "ex": "My uncle works in Da Nang."
                     },
                     {
                         "front": "Cousin",
-                        "back": "Anh/chị/em họ – dùng chung cho cả nam và nữ."
-                    },
-                    {
-                        "front": "He has / They have",
-                        "back": "He, She, It dùng 'has'. I, You, We, They dùng 'have'."
+                        "pos": "Danh từ",
+                        "back": "Anh chị em họ",
+                        "ex": "I have five cousins."
                     },
                     {
                         "front": "Only child",
-                        "back": "Con một (không có anh chị em)."
+                        "pos": "Danh từ",
+                        "back": "Con một",
+                        "ex": "She is an only child."
                     },
                     {
-                        "front": "There are four people in my family.",
-                        "back": "Mẫu câu chuẩn nói số thành viên gia đình."
+                        "front": "Relatives",
+                        "pos": "Danh từ",
+                        "back": "Họ hàng",
+                        "ex": "We visit our relatives at Tet."
                     }
                 ],
                 "quiz": [
@@ -1955,28 +2174,64 @@
                 ],
                 "flashcards": [
                     {
-                        "front": "Bảng tính từ sở hữu",
-                        "back": "my – your – his – her – its – our – their"
+                        "front": "My",
+                        "pos": "Tính từ sở hữu",
+                        "back": "Của tôi",
+                        "ex": "This is my bag."
                     },
                     {
-                        "front": "Its vs It's",
-                        "back": "Its = của nó (sở hữu). It's = it is."
+                        "front": "Your",
+                        "pos": "Tính từ sở hữu",
+                        "back": "Của bạn",
+                        "ex": "Is this your phone?"
                     },
                     {
-                        "front": "Lan's bag",
-                        "back": "Túi của Lan – 's dùng cho người sở hữu số ít."
+                        "front": "His",
+                        "pos": "Tính từ sở hữu",
+                        "back": "Của anh ấy",
+                        "ex": "His car is new."
                     },
                     {
-                        "front": "my parents' house",
-                        "back": "Nhà của bố mẹ tôi – danh từ số nhiều đã có -s thì chỉ thêm dấu '."
+                        "front": "Her",
+                        "pos": "Tính từ sở hữu",
+                        "back": "Của cô ấy",
+                        "ex": "Her name is Mai."
                     },
                     {
-                        "front": "the children's toys",
-                        "back": "Số nhiều bất quy tắc vẫn thêm 's."
+                        "front": "Its",
+                        "pos": "Tính từ sở hữu",
+                        "back": "Của nó (vật, con vật)",
+                        "ex": "The dog wags its tail."
+                    },
+                    {
+                        "front": "Our",
+                        "pos": "Tính từ sở hữu",
+                        "back": "Của chúng tôi",
+                        "ex": "Our office is downtown."
+                    },
+                    {
+                        "front": "Their",
+                        "pos": "Tính từ sở hữu",
+                        "back": "Của họ",
+                        "ex": "Their house is big."
+                    },
+                    {
+                        "front": "Belong to",
+                        "pos": "Động từ",
+                        "back": "Thuộc về",
+                        "ex": "This laptop belongs to me."
+                    },
+                    {
+                        "front": "Own",
+                        "pos": "Tính từ / Động từ",
+                        "back": "Riêng / Sở hữu",
+                        "ex": "I have my own room."
                     },
                     {
                         "front": "Whose",
-                        "back": "Từ để hỏi quyền sở hữu: Của ai?"
+                        "pos": "Từ hỏi",
+                        "back": "Của ai",
+                        "ex": "Whose keys are these?"
                     }
                 ],
                 "quiz": [
@@ -2207,28 +2462,64 @@
                 ],
                 "flashcards": [
                     {
-                        "front": "There is + N số ít",
-                        "back": "Có một... (There's a lamp on the table)."
+                        "front": "There is / There are",
+                        "pos": "Cấu trúc",
+                        "back": "Có (tồn tại)",
+                        "ex": "There is a book on the desk."
                     },
                     {
-                        "front": "There are + N số nhiều",
-                        "back": "Có những... (There are two lamps)."
+                        "front": "Table",
+                        "pos": "Danh từ",
+                        "back": "Cái bàn",
+                        "ex": "There is a table in the room."
                     },
                     {
-                        "front": "Some vs Any",
-                        "back": "Some dùng ở câu khẳng định; any dùng ở câu phủ định và câu hỏi."
+                        "front": "Chair",
+                        "pos": "Danh từ",
+                        "back": "Cái ghế",
+                        "ex": "There are four chairs."
                     },
                     {
-                        "front": "Is there...? / Are there...?",
-                        "back": "Dạng câu hỏi – trả lời: Yes, there is / No, there aren't."
+                        "front": "Window",
+                        "pos": "Danh từ",
+                        "back": "Cửa sổ",
+                        "ex": "There are two windows."
+                    },
+                    {
+                        "front": "Some",
+                        "pos": "Từ hạn định",
+                        "back": "Một vài (câu khẳng định)",
+                        "ex": "There are some pictures."
+                    },
+                    {
+                        "front": "Any",
+                        "pos": "Từ hạn định",
+                        "back": "Nào (câu hỏi/phủ định)",
+                        "ex": "Are there any shops near here?"
+                    },
+                    {
+                        "front": "A lot of",
+                        "pos": "Cụm từ",
+                        "back": "Rất nhiều",
+                        "ex": "There are a lot of people."
+                    },
+                    {
+                        "front": "Near",
+                        "pos": "Giới từ",
+                        "back": "Gần",
+                        "ex": "There's a bank near my house."
                     },
                     {
                         "front": "Between",
-                        "back": "Ở giữa hai vật: between the bed and the wall."
+                        "pos": "Giới từ",
+                        "back": "Ở giữa (hai vật)",
+                        "ex": "The lamp is between the bed and the door."
                     },
                     {
                         "front": "Opposite",
-                        "back": "Đối diện: opposite the bank."
+                        "pos": "Giới từ",
+                        "back": "Đối diện",
+                        "ex": "There's a café opposite the school."
                     }
                 ],
                 "quiz": [
@@ -2454,27 +2745,63 @@
                 "flashcards": [
                     {
                         "front": "Living room",
-                        "back": "Phòng khách."
+                        "pos": "Danh từ",
+                        "back": "Phòng khách",
+                        "ex": "We watch TV in the living room."
                     },
                     {
-                        "front": "Fridge",
-                        "back": "Tủ lạnh (viết đầy đủ: refrigerator)."
+                        "front": "Bedroom",
+                        "pos": "Danh từ",
+                        "back": "Phòng ngủ",
+                        "ex": "My bedroom is small but cosy."
+                    },
+                    {
+                        "front": "Kitchen",
+                        "pos": "Danh từ",
+                        "back": "Nhà bếp",
+                        "ex": "My mother is cooking in the kitchen."
+                    },
+                    {
+                        "front": "Bathroom",
+                        "pos": "Danh từ",
+                        "back": "Phòng tắm",
+                        "ex": "There are two bathrooms."
                     },
                     {
                         "front": "Furniture",
-                        "back": "Đồ nội thất – danh từ KHÔNG đếm được, không thêm -s."
+                        "pos": "Danh từ",
+                        "back": "Đồ nội thất (không đếm được)",
+                        "ex": "The furniture is new."
                     },
                     {
-                        "front": "in / on / under",
-                        "back": "in = trong, on = trên bề mặt, under = bên dưới."
+                        "front": "Sofa",
+                        "pos": "Danh từ",
+                        "back": "Ghế sofa",
+                        "ex": "The cat is on the sofa."
                     },
                     {
-                        "front": "Next to",
-                        "back": "Bên cạnh (= beside)."
+                        "front": "Fridge",
+                        "pos": "Danh từ",
+                        "back": "Tủ lạnh",
+                        "ex": "The milk is in the fridge."
                     },
                     {
-                        "front": "I live on the third floor.",
-                        "back": "Nói về tầng dùng giới từ 'on'."
+                        "front": "Wardrobe",
+                        "pos": "Danh từ",
+                        "back": "Tủ quần áo",
+                        "ex": "My clothes are in the wardrobe."
+                    },
+                    {
+                        "front": "Apartment / Flat",
+                        "pos": "Danh từ",
+                        "back": "Căn hộ",
+                        "ex": "I live in a small apartment."
+                    },
+                    {
+                        "front": "Floor",
+                        "pos": "Danh từ",
+                        "back": "Tầng / Sàn nhà",
+                        "ex": "I live on the third floor."
                     }
                 ],
                 "quiz": [
@@ -2709,28 +3036,64 @@
                 ],
                 "flashcards": [
                     {
-                        "front": "He / She / It + V(s)",
-                        "back": "Ngôi thứ 3 số ít luôn thêm -s hoặc -es vào động từ."
+                        "front": "Work",
+                        "pos": "Động từ",
+                        "back": "Làm việc",
+                        "ex": "I work in an office."
                     },
                     {
-                        "front": "study → studies",
-                        "back": "Động từ kết thúc phụ âm + y thì đổi y thành -ies."
+                        "front": "Study",
+                        "pos": "Động từ",
+                        "back": "Học",
+                        "ex": "She studies English every day."
                     },
                     {
-                        "front": "go → goes / watch → watches",
-                        "back": "Động từ kết thúc bằng -o, -ch, -sh, -s, -x thêm -es."
+                        "front": "Live",
+                        "pos": "Động từ",
+                        "back": "Sống",
+                        "ex": "They live in Hanoi."
                     },
                     {
-                        "front": "She doesn't work.",
-                        "back": "Sau doesn't, động từ trở về nguyên thể (không thêm -s)."
+                        "front": "Start",
+                        "pos": "Động từ",
+                        "back": "Bắt đầu",
+                        "ex": "My class starts at 8 a.m."
                     },
                     {
-                        "front": "Do you...? / Does he...?",
-                        "back": "Câu hỏi hiện tại đơn với động từ thường."
+                        "front": "Finish",
+                        "pos": "Động từ",
+                        "back": "Kết thúc",
+                        "ex": "I finish work at 5 p.m."
                     },
                     {
-                        "front": "have → has",
-                        "back": "Dạng bất quy tắc ở ngôi thứ 3 số ít."
+                        "front": "Watch",
+                        "pos": "Động từ",
+                        "back": "Xem",
+                        "ex": "He watches TV after dinner."
+                    },
+                    {
+                        "front": "Go",
+                        "pos": "Động từ",
+                        "back": "Đi",
+                        "ex": "She goes to school by bus."
+                    },
+                    {
+                        "front": "Every day",
+                        "pos": "Trạng từ",
+                        "back": "Mỗi ngày",
+                        "ex": "I read the news every day."
+                    },
+                    {
+                        "front": "On weekdays",
+                        "pos": "Cụm từ",
+                        "back": "Vào các ngày trong tuần",
+                        "ex": "I get up early on weekdays."
+                    },
+                    {
+                        "front": "At weekends",
+                        "pos": "Cụm từ",
+                        "back": "Vào cuối tuần",
+                        "ex": "We relax at weekends."
                     }
                 ],
                 "quiz": [
@@ -2959,28 +3322,64 @@
                 ],
                 "flashcards": [
                     {
-                        "front": "Always / Usually / Often",
-                        "back": "Luôn luôn / Thường xuyên / Thường (mức độ giảm dần)."
+                        "front": "Always",
+                        "pos": "Trạng từ",
+                        "back": "Luôn luôn (100%)",
+                        "ex": "I always have breakfast."
                     },
                     {
-                        "front": "Sometimes / Rarely / Never",
-                        "back": "Thỉnh thoảng / Hiếm khi / Không bao giờ."
+                        "front": "Usually",
+                        "pos": "Trạng từ",
+                        "back": "Thường xuyên (~90%)",
+                        "ex": "She usually walks to work."
                     },
                     {
-                        "front": "Vị trí với động từ thường",
-                        "back": "Đứng TRƯỚC động từ: I always get up early."
+                        "front": "Often",
+                        "pos": "Trạng từ",
+                        "back": "Thường (~70%)",
+                        "ex": "We often eat out."
                     },
                     {
-                        "front": "Vị trí với To Be",
-                        "back": "Đứng SAU To Be: He is never late."
+                        "front": "Sometimes",
+                        "pos": "Trạng từ",
+                        "back": "Thỉnh thoảng (~50%)",
+                        "ex": "He sometimes plays tennis."
                     },
                     {
-                        "front": "Once / Twice / Three times a week",
-                        "back": "Một / hai / ba lần một tuần – đứng cuối câu."
+                        "front": "Rarely / Seldom",
+                        "pos": "Trạng từ",
+                        "back": "Hiếm khi (~10%)",
+                        "ex": "I rarely drink soda."
                     },
                     {
-                        "front": "How often...?",
-                        "back": "Câu hỏi về tần suất: How often do you travel?"
+                        "front": "Never",
+                        "pos": "Trạng từ",
+                        "back": "Không bao giờ (0%)",
+                        "ex": "They never arrive late."
+                    },
+                    {
+                        "front": "Once a week",
+                        "pos": "Cụm từ",
+                        "back": "Một lần một tuần",
+                        "ex": "I go swimming once a week."
+                    },
+                    {
+                        "front": "Twice a month",
+                        "pos": "Cụm từ",
+                        "back": "Hai lần một tháng",
+                        "ex": "We meet twice a month."
+                    },
+                    {
+                        "front": "Every morning",
+                        "pos": "Cụm từ",
+                        "back": "Mỗi buổi sáng",
+                        "ex": "He jogs every morning."
+                    },
+                    {
+                        "front": "How often",
+                        "pos": "Cụm hỏi",
+                        "back": "Bao lâu một lần",
+                        "ex": "How often do you exercise?"
                     }
                 ],
                 "quiz": [
@@ -3206,27 +3605,63 @@
                 "flashcards": [
                     {
                         "front": "Get up",
-                        "back": "Thức dậy và ra khỏi giường."
+                        "pos": "Cụm động từ",
+                        "back": "Thức dậy, ra khỏi giường",
+                        "ex": "I get up at 6 a.m."
                     },
                     {
-                        "front": "Have breakfast / lunch / dinner",
-                        "back": "Ăn sáng / trưa / tối – dùng động từ 'have', không dùng 'eat' trong cụm cố định này."
+                        "front": "Wake up",
+                        "pos": "Cụm động từ",
+                        "back": "Tỉnh giấc",
+                        "ex": "I wake up before my alarm."
                     },
                     {
-                        "front": "Half past seven",
-                        "back": "7 giờ 30 phút."
+                        "front": "Have breakfast",
+                        "pos": "Cụm động từ",
+                        "back": "Ăn sáng",
+                        "ex": "I have breakfast at 7."
                     },
                     {
-                        "front": "A quarter to eight",
-                        "back": "8 giờ kém 15 (= 7:45)."
+                        "front": "Take a shower",
+                        "pos": "Cụm động từ",
+                        "back": "Tắm vòi sen",
+                        "ex": "She takes a shower every morning."
                     },
                     {
-                        "front": "at / in / on",
-                        "back": "at + giờ; in + buổi/tháng/năm; on + ngày/thứ."
+                        "front": "Brush my teeth",
+                        "pos": "Cụm động từ",
+                        "back": "Đánh răng",
+                        "ex": "I brush my teeth twice a day."
                     },
                     {
-                        "front": "at night",
-                        "back": "Vào ban đêm – ngoại lệ, không dùng 'in the night'."
+                        "front": "Go to work",
+                        "pos": "Cụm động từ",
+                        "back": "Đi làm",
+                        "ex": "He goes to work by motorbike."
+                    },
+                    {
+                        "front": "Have lunch",
+                        "pos": "Cụm động từ",
+                        "back": "Ăn trưa",
+                        "ex": "We have lunch at 12."
+                    },
+                    {
+                        "front": "Get home",
+                        "pos": "Cụm động từ",
+                        "back": "Về đến nhà",
+                        "ex": "I get home around 6 p.m."
+                    },
+                    {
+                        "front": "Do the housework",
+                        "pos": "Cụm động từ",
+                        "back": "Làm việc nhà",
+                        "ex": "I do the housework at weekends."
+                    },
+                    {
+                        "front": "Go to bed",
+                        "pos": "Cụm động từ",
+                        "back": "Đi ngủ",
+                        "ex": "I go to bed at 11 p.m."
                     }
                 ],
                 "quiz": [
@@ -3451,28 +3886,64 @@
                 ],
                 "flashcards": [
                     {
-                        "front": "What do you do?",
-                        "back": "Câu hỏi nghề nghiệp phổ biến nhất (không phải 'What are you doing?')."
+                        "front": "Job / Occupation",
+                        "pos": "Danh từ",
+                        "back": "Nghề nghiệp",
+                        "ex": "What's your job?"
                     },
                     {
-                        "front": "an engineer / an accountant",
-                        "back": "Dùng 'an' vì bắt đầu bằng nguyên âm."
+                        "front": "Doctor",
+                        "pos": "Danh từ",
+                        "back": "Bác sĩ",
+                        "ex": "A doctor works in a hospital."
                     },
                     {
-                        "front": "work for",
-                        "back": "Làm việc cho (một công ty): I work for VinGroup."
+                        "front": "Nurse",
+                        "pos": "Danh từ",
+                        "back": "Y tá",
+                        "ex": "My sister is a nurse."
                     },
                     {
-                        "front": "work as",
-                        "back": "Làm ở vị trí: I work as a designer."
+                        "front": "Engineer",
+                        "pos": "Danh từ",
+                        "back": "Kỹ sư",
+                        "ex": "He is a software engineer."
+                    },
+                    {
+                        "front": "Accountant",
+                        "pos": "Danh từ",
+                        "back": "Kế toán",
+                        "ex": "She works as an accountant."
+                    },
+                    {
+                        "front": "Salesperson",
+                        "pos": "Danh từ",
+                        "back": "Nhân viên bán hàng",
+                        "ex": "A salesperson works in a shop."
+                    },
+                    {
+                        "front": "Receptionist",
+                        "pos": "Danh từ",
+                        "back": "Lễ tân",
+                        "ex": "The receptionist answers the phone."
                     },
                     {
                         "front": "Colleague",
-                        "back": "Đồng nghiệp."
+                        "pos": "Danh từ",
+                        "back": "Đồng nghiệp",
+                        "ex": "My colleagues are friendly."
                     },
                     {
-                        "front": "Part-time",
-                        "back": "Bán thời gian (ngược lại: full-time)."
+                        "front": "Salary",
+                        "pos": "Danh từ",
+                        "back": "Lương",
+                        "ex": "The salary is good."
+                    },
+                    {
+                        "front": "Full-time / Part-time",
+                        "pos": "Tính từ",
+                        "back": "Toàn thời gian / Bán thời gian",
+                        "ex": "I have a part-time job."
                     }
                 ],
                 "quiz": [
@@ -3697,28 +4168,64 @@
                 ],
                 "flashcards": [
                     {
-                        "front": "like / love / enjoy + V-ing",
-                        "back": "Sau các động từ chỉ sở thích, động từ theo sau ở dạng V-ing."
+                        "front": "Hobby",
+                        "pos": "Danh từ",
+                        "back": "Sở thích",
+                        "ex": "My hobby is photography."
                     },
                     {
-                        "front": "swim → swimming",
-                        "back": "Gấp đôi phụ âm cuối khi trước nó là một nguyên âm ngắn."
+                        "front": "Free time",
+                        "pos": "Danh từ",
+                        "back": "Thời gian rảnh",
+                        "ex": "What do you do in your free time?"
                     },
                     {
-                        "front": "write → writing",
-                        "back": "Bỏ chữ 'e' câm trước khi thêm -ing."
+                        "front": "Read books",
+                        "pos": "Cụm động từ",
+                        "back": "Đọc sách",
+                        "ex": "I love reading books."
                     },
                     {
-                        "front": "play / go / do",
-                        "back": "play + môn có bóng; go + V-ing; do + yoga, karate, exercise."
+                        "front": "Listen to music",
+                        "pos": "Cụm động từ",
+                        "back": "Nghe nhạc",
+                        "ex": "She listens to music every night."
                     },
                     {
-                        "front": "Be good at + V-ing",
-                        "back": "Giỏi về việc gì: She's good at singing."
+                        "front": "Play football",
+                        "pos": "Cụm động từ",
+                        "back": "Chơi bóng đá",
+                        "ex": "We play football on Sundays."
+                    },
+                    {
+                        "front": "Go shopping",
+                        "pos": "Cụm động từ",
+                        "back": "Đi mua sắm",
+                        "ex": "They go shopping at weekends."
+                    },
+                    {
+                        "front": "Take photos",
+                        "pos": "Cụm động từ",
+                        "back": "Chụp ảnh",
+                        "ex": "He likes taking photos."
                     },
                     {
                         "front": "Hang out",
-                        "back": "Đi chơi, tụ tập với bạn bè."
+                        "pos": "Cụm động từ",
+                        "back": "Đi chơi, tụ tập",
+                        "ex": "I hang out with friends."
+                    },
+                    {
+                        "front": "Interesting / Boring",
+                        "pos": "Tính từ",
+                        "back": "Thú vị / Chán",
+                        "ex": "This game is interesting."
+                    },
+                    {
+                        "front": "Be good at",
+                        "pos": "Cụm từ",
+                        "back": "Giỏi về",
+                        "ex": "She is good at cooking."
                     }
                 ],
                 "quiz": [
@@ -3953,28 +4460,64 @@
                 ],
                 "flashcards": [
                     {
-                        "front": "I / He / She / It + WAS",
-                        "back": "Dạng quá khứ của am/is."
+                        "front": "Yesterday",
+                        "pos": "Trạng từ",
+                        "back": "Hôm qua",
+                        "ex": "I was at home yesterday."
                     },
                     {
-                        "front": "You / We / They + WERE",
-                        "back": "Dạng quá khứ của are."
+                        "front": "Last night",
+                        "pos": "Cụm từ",
+                        "back": "Tối qua",
+                        "ex": "She was tired last night."
                     },
                     {
-                        "front": "wasn't / weren't",
-                        "back": "Dạng phủ định rút gọn của was not / were not."
+                        "front": "Last week / month",
+                        "pos": "Cụm từ",
+                        "back": "Tuần / tháng trước",
+                        "ex": "We were in Hue last week."
                     },
                     {
-                        "front": "was born",
-                        "back": "Được sinh ra – luôn dùng dạng bị động: I was born in 1998."
+                        "front": "Two days ago",
+                        "pos": "Cụm từ",
+                        "back": "Hai ngày trước",
+                        "ex": "He was sick two days ago."
                     },
                     {
-                        "front": "Yesterday / Last night / ...ago",
-                        "back": "Dấu hiệu nhận biết thì quá khứ đơn."
+                        "front": "In 2020",
+                        "pos": "Cụm từ",
+                        "back": "Vào năm 2020",
+                        "ex": "I was a student in 2020."
                     },
                     {
-                        "front": "How was your weekend?",
-                        "back": "Cuối tuần của bạn thế nào? – câu hỏi xã giao rất thông dụng."
+                        "front": "Born",
+                        "pos": "Quá khứ phân từ",
+                        "back": "Được sinh ra",
+                        "ex": "I was born in Hanoi."
+                    },
+                    {
+                        "front": "Absent",
+                        "pos": "Tính từ",
+                        "back": "Vắng mặt",
+                        "ex": "Two students were absent."
+                    },
+                    {
+                        "front": "Crowded",
+                        "pos": "Tính từ",
+                        "back": "Đông đúc",
+                        "ex": "The market was crowded."
+                    },
+                    {
+                        "front": "Excited",
+                        "pos": "Tính từ",
+                        "back": "Hào hứng",
+                        "ex": "We were very excited."
+                    },
+                    {
+                        "front": "Delicious",
+                        "pos": "Tính từ",
+                        "back": "Ngon",
+                        "ex": "The food was delicious."
                     }
                 ],
                 "quiz": [
@@ -4199,28 +4742,64 @@
                 ],
                 "flashcards": [
                     {
-                        "front": "What did you do last weekend?",
-                        "back": "Câu hỏi mở đầu hội thoại rất phổ biến."
+                        "front": "Weekend",
+                        "pos": "Danh từ",
+                        "back": "Cuối tuần",
+                        "ex": "I had a great weekend."
                     },
                     {
-                        "front": "went / had / met / saw",
-                        "back": "Quá khứ bất quy tắc của go / have / meet / see."
+                        "front": "Visit",
+                        "pos": "Động từ",
+                        "back": "Thăm",
+                        "ex": "I visited my grandparents."
                     },
                     {
-                        "front": "two days ago",
-                        "back": "'ago' luôn đứng SAU khoảng thời gian."
+                        "front": "Stay at home",
+                        "pos": "Cụm động từ",
+                        "back": "Ở nhà",
+                        "ex": "We stayed at home on Sunday."
                     },
                     {
-                        "front": "First, Then, After that, Finally",
-                        "back": "Bộ từ nối kể chuyện theo trình tự."
+                        "front": "Go out",
+                        "pos": "Cụm động từ",
+                        "back": "Đi chơi, ra ngoài",
+                        "ex": "We went out for dinner."
                     },
                     {
-                        "front": "I had a great time.",
-                        "back": "Tôi đã có khoảng thời gian tuyệt vời."
+                        "front": "Meet friends",
+                        "pos": "Cụm động từ",
+                        "back": "Gặp bạn bè",
+                        "ex": "I met my friends at a café."
                     },
                     {
-                        "front": "Tiring vs Tired",
-                        "back": "Tiring = (việc) gây mệt. Tired = (người) cảm thấy mệt."
+                        "front": "Watch a film",
+                        "pos": "Cụm động từ",
+                        "back": "Xem phim",
+                        "ex": "We watched a film at the cinema."
+                    },
+                    {
+                        "front": "Relax",
+                        "pos": "Động từ",
+                        "back": "Thư giãn",
+                        "ex": "I just relaxed at home."
+                    },
+                    {
+                        "front": "Travel",
+                        "pos": "Động từ",
+                        "back": "Đi du lịch",
+                        "ex": "They travelled to Sapa."
+                    },
+                    {
+                        "front": "Tiring",
+                        "pos": "Tính từ",
+                        "back": "Mệt mỏi, hao sức",
+                        "ex": "The trip was tiring but fun."
+                    },
+                    {
+                        "front": "Enjoy",
+                        "pos": "Động từ",
+                        "back": "Tận hưởng",
+                        "ex": "I really enjoyed it."
                     }
                 ],
                 "quiz": [
@@ -4455,28 +5034,64 @@
                 ],
                 "flashcards": [
                     {
-                        "front": "go → went",
-                        "back": "Động từ bất quy tắc rất thông dụng."
+                        "front": "Went",
+                        "pos": "Động từ (V2)",
+                        "back": "Đã đi (go)",
+                        "ex": "I went to the market."
                     },
                     {
-                        "front": "study → studied",
-                        "back": "Phụ âm + y thì đổi y thành -ied."
+                        "front": "Had",
+                        "pos": "Động từ (V2)",
+                        "back": "Đã có / đã ăn (have)",
+                        "ex": "We had lunch at 12."
                     },
                     {
-                        "front": "stop → stopped",
-                        "back": "Gấp đôi phụ âm cuối khi trước nó là một nguyên âm ngắn."
+                        "front": "Ate",
+                        "pos": "Động từ (V2)",
+                        "back": "Đã ăn (eat)",
+                        "ex": "She ate a sandwich."
                     },
                     {
-                        "front": "didn't + V nguyên thể",
-                        "back": "I didn't go (KHÔNG phải didn't went)."
+                        "front": "Saw",
+                        "pos": "Động từ (V2)",
+                        "back": "Đã nhìn thấy (see)",
+                        "ex": "I saw a good film."
                     },
                     {
-                        "front": "Did + S + V?",
-                        "back": "Did you eat? – Yes, I did. / No, I didn't."
+                        "front": "Bought",
+                        "pos": "Động từ (V2)",
+                        "back": "Đã mua (buy)",
+                        "ex": "He bought a new phone."
                     },
                     {
-                        "front": "3 cách đọc đuôi -ed",
-                        "back": "/ɪd/ sau t,d – /t/ sau âm vô thanh – /d/ sau các âm còn lại."
+                        "front": "Made",
+                        "pos": "Động từ (V2)",
+                        "back": "Đã làm/chế tạo (make)",
+                        "ex": "She made a cake."
+                    },
+                    {
+                        "front": "Took",
+                        "pos": "Động từ (V2)",
+                        "back": "Đã lấy/đi (take)",
+                        "ex": "We took a taxi."
+                    },
+                    {
+                        "front": "Came",
+                        "pos": "Động từ (V2)",
+                        "back": "Đã đến (come)",
+                        "ex": "They came late."
+                    },
+                    {
+                        "front": "Studied",
+                        "pos": "Động từ (V2)",
+                        "back": "Đã học (study)",
+                        "ex": "I studied English last night."
+                    },
+                    {
+                        "front": "Stopped",
+                        "pos": "Động từ (V2)",
+                        "back": "Đã dừng (stop)",
+                        "ex": "The bus stopped here."
                     }
                 ],
                 "quiz": [
@@ -4706,28 +5321,64 @@
                 ],
                 "flashcards": [
                     {
-                        "front": "I'd like...",
-                        "back": "Cách nói lịch sự của 'I want' khi gọi món."
+                        "front": "Menu",
+                        "pos": "Danh từ",
+                        "back": "Thực đơn",
+                        "ex": "Can I see the menu, please?"
                     },
                     {
-                        "front": "Menu",
-                        "back": "Thực đơn."
+                        "front": "Order",
+                        "pos": "Động từ / Danh từ",
+                        "back": "Gọi món / Đơn gọi món",
+                        "ex": "Are you ready to order?"
+                    },
+                    {
+                        "front": "Starter / Main course / Dessert",
+                        "pos": "Danh từ",
+                        "back": "Món khai vị / Món chính / Tráng miệng",
+                        "ex": "For dessert, I'd like ice cream."
                     },
                     {
                         "front": "Bill / Check",
-                        "back": "Hóa đơn (Anh-Anh dùng bill, Anh-Mỹ dùng check)."
+                        "pos": "Danh từ",
+                        "back": "Hóa đơn",
+                        "ex": "Could we have the bill, please?"
                     },
                     {
-                        "front": "a cup of coffee / a bowl of rice",
-                        "back": "Đơn vị đếm cho danh từ không đếm được."
+                        "front": "Waiter / Waitress",
+                        "pos": "Danh từ",
+                        "back": "Nhân viên phục vụ nam / nữ",
+                        "ex": "The waiter is very polite."
                     },
                     {
-                        "front": "Some vs Any",
-                        "back": "Some ở câu khẳng định và lời mời; any ở câu phủ định và câu hỏi."
+                        "front": "Delicious",
+                        "pos": "Tính từ",
+                        "back": "Ngon",
+                        "ex": "This soup is delicious."
                     },
                     {
-                        "front": "I'm allergic to...",
-                        "back": "Tôi bị dị ứng với... – cụm rất quan trọng khi ăn uống."
+                        "front": "Spicy",
+                        "pos": "Tính từ",
+                        "back": "Cay",
+                        "ex": "Is this dish spicy?"
+                    },
+                    {
+                        "front": "Vegetarian",
+                        "pos": "Tính từ / Danh từ",
+                        "back": "Chay / Người ăn chay",
+                        "ex": "I'm a vegetarian."
+                    },
+                    {
+                        "front": "Book a table",
+                        "pos": "Cụm động từ",
+                        "back": "Đặt bàn",
+                        "ex": "I'd like to book a table for two."
+                    },
+                    {
+                        "front": "Allergic to",
+                        "pos": "Tính từ",
+                        "back": "Dị ứng với",
+                        "ex": "I'm allergic to seafood."
                     }
                 ],
                 "quiz": [
@@ -4962,28 +5613,64 @@
                 ],
                 "flashcards": [
                     {
-                        "front": "S + am/is/are + V-ing",
-                        "back": "Cấu trúc thì hiện tại tiếp diễn."
+                        "front": "Now",
+                        "pos": "Trạng từ",
+                        "back": "Bây giờ",
+                        "ex": "I'm working now."
                     },
                     {
-                        "front": "What are you doing?",
-                        "back": "Bạn đang làm gì? (khác với 'What do you do?' = hỏi nghề nghiệp)"
+                        "front": "At the moment",
+                        "pos": "Cụm từ",
+                        "back": "Ngay lúc này",
+                        "ex": "She's cooking at the moment."
                     },
                     {
-                        "front": "now / at the moment / Look!",
-                        "back": "Dấu hiệu nhận biết thì hiện tại tiếp diễn."
+                        "front": "Right now",
+                        "pos": "Cụm từ",
+                        "back": "Ngay bây giờ",
+                        "ex": "He's driving right now."
                     },
                     {
-                        "front": "I know (NOT I am knowing)",
-                        "back": "Động từ chỉ trạng thái không dùng ở thì tiếp diễn."
+                        "front": "Today",
+                        "pos": "Trạng từ",
+                        "back": "Hôm nay",
+                        "ex": "We're working from home today."
                     },
                     {
-                        "front": "I work vs I'm working",
-                        "back": "I work = nghề nghiệp/thói quen. I'm working = đang làm ngay lúc này."
+                        "front": "Look!",
+                        "pos": "Thán từ",
+                        "back": "Nhìn kìa!",
+                        "ex": "Look! It's raining."
                     },
                     {
-                        "front": "isn't / aren't + V-ing",
-                        "back": "Dạng phủ định: She isn't sleeping."
+                        "front": "Wait",
+                        "pos": "Động từ",
+                        "back": "Chờ đợi",
+                        "ex": "I'm waiting for the bus."
+                    },
+                    {
+                        "front": "Sleep",
+                        "pos": "Động từ",
+                        "back": "Ngủ",
+                        "ex": "The baby is sleeping."
+                    },
+                    {
+                        "front": "Prepare",
+                        "pos": "Động từ",
+                        "back": "Chuẩn bị",
+                        "ex": "They're preparing dinner."
+                    },
+                    {
+                        "front": "Have a meeting",
+                        "pos": "Cụm động từ",
+                        "back": "Đang họp",
+                        "ex": "He's having a meeting."
+                    },
+                    {
+                        "front": "This week",
+                        "pos": "Cụm từ",
+                        "back": "Tuần này",
+                        "ex": "I'm studying hard this week."
                     }
                 ],
                 "quiz": [
@@ -5208,28 +5895,64 @@
                 ],
                 "flashcards": [
                     {
-                        "front": "What are you doing?",
-                        "back": "Bạn đang làm gì? – hỏi về hành động ngay lúc này."
+                        "front": "Cook",
+                        "pos": "Động từ",
+                        "back": "Nấu ăn",
+                        "ex": "My mum is cooking dinner."
                     },
                     {
-                        "front": "I'm getting ready.",
-                        "back": "Tôi đang chuẩn bị."
+                        "front": "Drive",
+                        "pos": "Động từ",
+                        "back": "Lái xe",
+                        "ex": "He's driving to work."
                     },
                     {
-                        "front": "She's wearing a red dress.",
-                        "back": "Dùng 'wear' + V-ing để tả trang phục đang mặc."
+                        "front": "Study",
+                        "pos": "Động từ",
+                        "back": "Học bài",
+                        "ex": "She's studying for a test."
                     },
                     {
-                        "front": "He has short hair. (NOT is having)",
-                        "back": "'Have' chỉ đặc điểm cố định không chia tiếp diễn."
+                        "front": "Talk on the phone",
+                        "pos": "Cụm động từ",
+                        "back": "Nói chuyện điện thoại",
+                        "ex": "Dad is talking on the phone."
                     },
                     {
-                        "front": "Can I call you back?",
-                        "back": "Tôi gọi lại cho bạn sau được không?"
+                        "front": "Get ready",
+                        "pos": "Cụm động từ",
+                        "back": "Chuẩn bị (sẵn sàng)",
+                        "ex": "I'm getting ready for work."
                     },
                     {
                         "front": "Take a break",
-                        "back": "Nghỉ giải lao."
+                        "pos": "Cụm động từ",
+                        "back": "Nghỉ giải lao",
+                        "ex": "We're taking a break now."
+                    },
+                    {
+                        "front": "Wear",
+                        "pos": "Động từ",
+                        "back": "Mặc, đeo",
+                        "ex": "She's wearing a red dress."
+                    },
+                    {
+                        "front": "Carry",
+                        "pos": "Động từ",
+                        "back": "Mang, xách",
+                        "ex": "He's carrying a big box."
+                    },
+                    {
+                        "front": "Smile",
+                        "pos": "Động từ",
+                        "back": "Mỉm cười",
+                        "ex": "The children are smiling."
+                    },
+                    {
+                        "front": "Queue / Wait in line",
+                        "pos": "Động từ",
+                        "back": "Xếp hàng",
+                        "ex": "People are queuing outside."
                     }
                 ],
                 "quiz": [
@@ -5464,28 +6187,64 @@
                 ],
                 "flashcards": [
                     {
-                        "front": "Can + V nguyên thể",
-                        "back": "Diễn tả khả năng: She can swim (KHÔNG phải can swims)."
+                        "front": "Can",
+                        "pos": "Động từ khuyết thiếu",
+                        "back": "Có thể (khả năng)",
+                        "ex": "I can swim."
+                    },
+                    {
+                        "front": "Can't",
+                        "pos": "Động từ khuyết thiếu",
+                        "back": "Không thể",
+                        "ex": "She can't drive."
                     },
                     {
                         "front": "Should",
-                        "back": "Nên – dùng để khuyên: You should rest."
+                        "pos": "Động từ khuyết thiếu",
+                        "back": "Nên",
+                        "ex": "You should see a doctor."
+                    },
+                    {
+                        "front": "Shouldn't",
+                        "pos": "Động từ khuyết thiếu",
+                        "back": "Không nên",
+                        "ex": "You shouldn't eat too much sugar."
                     },
                     {
                         "front": "Have to / Has to",
-                        "back": "Phải – nghĩa vụ từ hoàn cảnh: He has to work late."
+                        "pos": "Cụm động từ",
+                        "back": "Phải (bắt buộc)",
+                        "ex": "I have to work on Saturday."
                     },
                     {
-                        "front": "don't have to",
-                        "back": "Không cần phải (được tự do lựa chọn)."
+                        "front": "Don't have to",
+                        "pos": "Cụm động từ",
+                        "back": "Không cần phải",
+                        "ex": "You don't have to come early."
                     },
                     {
-                        "front": "mustn't",
-                        "back": "Cấm, không được phép (nghĩa hoàn toàn khác don't have to)."
+                        "front": "Must",
+                        "pos": "Động từ khuyết thiếu",
+                        "back": "Phải (quy định)",
+                        "ex": "You must wear a helmet."
                     },
                     {
-                        "front": "Can I...? / Could I...?",
-                        "back": "Xin phép – 'Could' lịch sự hơn 'Can'."
+                        "front": "Mustn't",
+                        "pos": "Động từ khuyết thiếu",
+                        "back": "Cấm, không được",
+                        "ex": "You mustn't smoke here."
+                    },
+                    {
+                        "front": "Be able to",
+                        "pos": "Cụm từ",
+                        "back": "Có khả năng",
+                        "ex": "I'm able to speak three languages."
+                    },
+                    {
+                        "front": "Advice",
+                        "pos": "Danh từ",
+                        "back": "Lời khuyên",
+                        "ex": "Can you give me some advice?"
                     }
                 ],
                 "quiz": [
@@ -5715,28 +6474,64 @@
                 ],
                 "flashcards": [
                     {
-                        "front": "How much is / are...?",
-                        "back": "Hỏi giá – 'is' cho số ít, 'are' cho số nhiều."
+                        "front": "Shop / Store",
+                        "pos": "Danh từ",
+                        "back": "Cửa hàng",
+                        "ex": "There's a new shop downtown."
+                    },
+                    {
+                        "front": "Price",
+                        "pos": "Danh từ",
+                        "back": "Giá",
+                        "ex": "The price is quite high."
+                    },
+                    {
+                        "front": "Expensive / Cheap",
+                        "pos": "Tính từ",
+                        "back": "Đắt / Rẻ",
+                        "ex": "This bag is too expensive."
+                    },
+                    {
+                        "front": "Size",
+                        "pos": "Danh từ",
+                        "back": "Cỡ, kích thước",
+                        "ex": "Do you have this in size M?"
                     },
                     {
                         "front": "Try on",
-                        "back": "Mặc thử: Can I try this on?"
+                        "pos": "Cụm động từ",
+                        "back": "Mặc thử",
+                        "ex": "Can I try this on?"
                     },
                     {
-                        "front": "This / That / These / Those",
-                        "back": "Này (gần, ít) / Kia (xa, ít) / Này (gần, nhiều) / Kia (xa, nhiều)."
+                        "front": "Fitting room",
+                        "pos": "Danh từ",
+                        "back": "Phòng thử đồ",
+                        "ex": "The fitting room is over there."
                     },
                     {
-                        "front": "too expensive vs cheap enough",
-                        "back": "'too' đứng TRƯỚC tính từ; 'enough' đứng SAU tính từ."
+                        "front": "Discount / Sale",
+                        "pos": "Danh từ",
+                        "back": "Giảm giá / Đợt sale",
+                        "ex": "Is there a discount?"
                     },
                     {
-                        "front": "cheaper than / more expensive than",
-                        "back": "Tính từ ngắn thêm -er; tính từ dài dùng 'more'."
+                        "front": "Pay by card / in cash",
+                        "pos": "Cụm động từ",
+                        "back": "Trả bằng thẻ / tiền mặt",
+                        "ex": "Can I pay by card?"
                     },
                     {
                         "front": "Receipt",
-                        "back": "Hóa đơn, biên lai (chữ 'p' câm, đọc /rɪˈsiːt/)."
+                        "pos": "Danh từ",
+                        "back": "Hóa đơn, biên lai",
+                        "ex": "Please keep your receipt."
+                    },
+                    {
+                        "front": "Refund / Exchange",
+                        "pos": "Danh từ",
+                        "back": "Hoàn tiền / Đổi hàng",
+                        "ex": "Can I get a refund?"
                     }
                 ],
                 "quiz": [
@@ -5966,28 +6761,64 @@
                 ],
                 "flashcards": [
                     {
-                        "front": "Turn left / Turn right",
-                        "back": "Rẽ trái / Rẽ phải."
+                        "front": "Turn left / right",
+                        "pos": "Cụm động từ",
+                        "back": "Rẽ trái / phải",
+                        "ex": "Turn left at the traffic lights."
                     },
                     {
                         "front": "Go straight ahead",
-                        "back": "Đi thẳng về phía trước."
+                        "pos": "Cụm động từ",
+                        "back": "Đi thẳng",
+                        "ex": "Go straight ahead for 200 metres."
+                    },
+                    {
+                        "front": "Corner",
+                        "pos": "Danh từ",
+                        "back": "Góc phố",
+                        "ex": "The shop is on the corner."
+                    },
+                    {
+                        "front": "Crossroads / Junction",
+                        "pos": "Danh từ",
+                        "back": "Ngã tư",
+                        "ex": "Turn right at the crossroads."
+                    },
+                    {
+                        "front": "Traffic lights",
+                        "pos": "Danh từ",
+                        "back": "Đèn giao thông",
+                        "ex": "Stop at the traffic lights."
                     },
                     {
                         "front": "Opposite",
-                        "back": "Đối diện: The bank is opposite the school."
+                        "pos": "Giới từ",
+                        "back": "Đối diện",
+                        "ex": "The bank is opposite the post office."
                     },
                     {
-                        "front": "Câu mệnh lệnh",
-                        "back": "Chỉ đường dùng động từ nguyên thể ở đầu câu, không có chủ ngữ."
+                        "front": "Next to / Beside",
+                        "pos": "Giới từ",
+                        "back": "Bên cạnh",
+                        "ex": "It's next to the pharmacy."
                     },
                     {
-                        "front": "How do I get to...?",
-                        "back": "Tôi đến ... bằng cách nào? – mẫu hỏi đường phổ biến nhất."
+                        "front": "Between",
+                        "pos": "Giới từ",
+                        "back": "Ở giữa (hai nơi)",
+                        "ex": "It's between the café and the bank."
                     },
                     {
-                        "front": "It takes about 10 minutes.",
-                        "back": "Mất khoảng 10 phút – nói thời gian di chuyển."
+                        "front": "Get lost",
+                        "pos": "Cụm động từ",
+                        "back": "Bị lạc đường",
+                        "ex": "Sorry, I'm lost."
+                    },
+                    {
+                        "front": "On foot",
+                        "pos": "Cụm từ",
+                        "back": "Đi bộ",
+                        "ex": "It's ten minutes on foot."
                     }
                 ],
                 "quiz": [
@@ -6216,28 +7047,64 @@
                 ],
                 "flashcards": [
                     {
-                        "front": "It's sunny / rainy / windy",
-                        "back": "Luôn dùng chủ ngữ giả 'It' khi nói thời tiết."
+                        "front": "Weather",
+                        "pos": "Danh từ",
+                        "back": "Thời tiết (không đếm được)",
+                        "ex": "The weather is nice today."
                     },
                     {
-                        "front": "What's the weather like?",
-                        "back": "Thời tiết thế nào? – 'like' nghĩa là 'như thế nào'."
+                        "front": "Sunny",
+                        "pos": "Tính từ",
+                        "back": "Nắng",
+                        "ex": "It's sunny and warm."
                     },
                     {
-                        "front": "Weather (không đếm được)",
-                        "back": "Không dùng a/an và không thêm -s: good weather."
+                        "front": "Rainy / Rain",
+                        "pos": "Tính từ / Động từ",
+                        "back": "Mưa",
+                        "ex": "It's raining outside."
+                    },
+                    {
+                        "front": "Cloudy",
+                        "pos": "Tính từ",
+                        "back": "Nhiều mây",
+                        "ex": "It's cloudy this morning."
+                    },
+                    {
+                        "front": "Windy",
+                        "pos": "Tính từ",
+                        "back": "Có gió",
+                        "ex": "It's very windy today."
+                    },
+                    {
+                        "front": "Hot / Cold",
+                        "pos": "Tính từ",
+                        "back": "Nóng / Lạnh",
+                        "ex": "It's really hot in July."
+                    },
+                    {
+                        "front": "Warm / Cool",
+                        "pos": "Tính từ",
+                        "back": "Ấm / Mát",
+                        "ex": "Autumn is cool and dry."
                     },
                     {
                         "front": "Spring / Summer / Autumn / Winter",
-                        "back": "Xuân / Hạ / Thu / Đông (Anh-Mỹ dùng 'Fall' thay 'Autumn')."
+                        "pos": "Danh từ",
+                        "back": "Xuân / Hạ / Thu / Đông",
+                        "ex": "Summer is my favourite season."
                     },
                     {
-                        "front": "It's raining vs It's rainy",
-                        "back": "Cả hai đều đúng: V-ing nhấn mạnh đang xảy ra lúc này."
+                        "front": "Temperature",
+                        "pos": "Danh từ",
+                        "back": "Nhiệt độ",
+                        "ex": "The temperature is 30 degrees."
                     },
                     {
-                        "front": "in summer",
-                        "back": "Mùa đi với giới từ 'in'."
+                        "front": "Umbrella",
+                        "pos": "Danh từ",
+                        "back": "Cái ô",
+                        "ex": "Take an umbrella, it's raining."
                     }
                 ],
                 "quiz": [
@@ -6471,28 +7338,64 @@
                 ],
                 "flashcards": [
                     {
-                        "front": "be going to + V",
-                        "back": "Diễn tả dự định đã lên kế hoạch: I'm going to travel."
+                        "front": "Plan",
+                        "pos": "Danh từ / Động từ",
+                        "back": "Kế hoạch / Lên kế hoạch",
+                        "ex": "What are your plans for tonight?"
                     },
                     {
-                        "front": "will + V",
-                        "back": "Quyết định tức thì hoặc lời hứa: I'll help you."
+                        "front": "Free",
+                        "pos": "Tính từ",
+                        "back": "Rảnh",
+                        "ex": "Are you free on Saturday?"
                     },
                     {
-                        "front": "Would you like to...?",
-                        "back": "Bạn có muốn... không? – lời mời lịch sự."
+                        "front": "Busy",
+                        "pos": "Tính từ",
+                        "back": "Bận",
+                        "ex": "Sorry, I'm busy that day."
                     },
                     {
-                        "front": "How about + V-ing?",
-                        "back": "Đề xuất: How about going out tonight?"
+                        "front": "Invite",
+                        "pos": "Động từ",
+                        "back": "Mời",
+                        "ex": "She invited me to her party."
                     },
                     {
-                        "front": "I'd love to, but...",
-                        "back": "Cách từ chối lịch sự: nhận thiện chí trước, rồi nêu lý do."
+                        "front": "Meet up",
+                        "pos": "Cụm động từ",
+                        "back": "Gặp nhau",
+                        "ex": "Let's meet up at 7."
                     },
                     {
-                        "front": "I'm meeting Lan at 7.",
-                        "back": "Lịch hẹn chắc chắn dùng thì hiện tại tiếp diễn."
+                        "front": "Go out",
+                        "pos": "Cụm động từ",
+                        "back": "Đi chơi",
+                        "ex": "Do you want to go out tonight?"
+                    },
+                    {
+                        "front": "Be going to",
+                        "pos": "Cấu trúc",
+                        "back": "Dự định sẽ",
+                        "ex": "I'm going to visit Hue."
+                    },
+                    {
+                        "front": "Maybe / Perhaps",
+                        "pos": "Trạng từ",
+                        "back": "Có thể",
+                        "ex": "Maybe we can meet on Sunday."
+                    },
+                    {
+                        "front": "Sounds great!",
+                        "pos": "Cụm từ",
+                        "back": "Nghe hay đấy!",
+                        "ex": "A movie? Sounds great!"
+                    },
+                    {
+                        "front": "Cancel / Postpone",
+                        "pos": "Động từ",
+                        "back": "Hủy / Hoãn",
+                        "ex": "We had to cancel the trip."
                     }
                 ],
                 "quiz": [
@@ -6625,6 +7528,7 @@
         }
         let allActivity = JSON.parse(localStorage.getItem("all_user_activity_a1") || "{}");
         let cloud = null;            // API Firebase, null = chế độ ngoại tuyến
+        let contentOverrides = JSON.parse(localStorage.getItem("lesson_overrides_a1") || "{}");
         let cloudChecked = false;
         let currentLessonId = 1;
         let activeCategoryFilter = "ALL";
@@ -6643,7 +7547,6 @@
         const userAvatarEl = document.getElementById("userAvatar");
         const desktopUserRole = document.getElementById("desktopUserRole");
         const mobileUserRole = document.getElementById("mobileUserRole");
-        const adminSubmissionsBtn = document.getElementById("adminSubmissionsBtn");
 
         const lessonsListEl = document.getElementById("lessonsList");
         const lessonViewportEl = document.getElementById("lessonViewport");
@@ -6761,20 +7664,58 @@
             userEmailDisplay.textContent = currentUser.username;
             userAvatarEl.textContent = currentUser.username.charAt(0).toUpperCase();
 
+            const studentOnly = ["progressWidget", "materialsBlock", "searchFilterBlock", "lessonsList", "sidebarFooter", "mainHeader", "lessonViewport"];
+
             if (currentUser.role === "admin") {
                 desktopUserRole.textContent = "Quản trị viên (Admin)";
                 mobileUserRole.textContent = "Quản trị viên";
-                adminSubmissionsBtn.classList.remove("hidden");
-                adminSubmissionsBtn.classList.add("flex");
+
+                // Ẩn toàn bộ giao diện học tập
+                studentOnly.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.add("hidden");
+                });
+                document.getElementById("adminNav").classList.remove("hidden");
+                document.getElementById("adminWorkspace").classList.remove("hidden");
+
+                showAdminTab("dash");
             } else {
                 desktopUserRole.textContent = "Học viên Online";
                 mobileUserRole.textContent = "Học viên";
-                adminSubmissionsBtn.classList.add("hidden");
-                adminSubmissionsBtn.classList.remove("flex");
-            }
 
-            renderLessonsList();
-            renderCurrentLesson();
+                studentOnly.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.remove("hidden");
+                });
+                document.getElementById("adminNav").classList.add("hidden");
+                document.getElementById("adminWorkspace").classList.add("hidden");
+
+                renderLessonsList();
+                renderCurrentLesson();
+            }
+        }
+
+        // ===================== ĐIỀU HƯỚNG TAB ADMIN =====================
+        let currentAdminTab = "dash";
+
+        function showAdminTab(tab) {
+            currentAdminTab = tab;
+            document.getElementById("adminTabDash").classList.toggle("hidden", tab !== "dash");
+            document.getElementById("adminTabEditor").classList.toggle("hidden", tab !== "editor");
+
+            document.querySelectorAll(".admin-tab-btn").forEach(btn => {
+                const on = btn.dataset.tab === tab;
+                btn.className = "admin-tab-btn w-full flex items-center gap-2 text-sm p-2.5 rounded-lg transition border " +
+                    (on ? "bg-purple-900 border-purple-600 text-white font-semibold"
+                        : "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white");
+            });
+
+            // Đóng ngăn kéo trên mobile
+            sidebarEl.classList.add("-translate-x-full");
+            mobileOverlayEl.classList.add("hidden");
+
+            if (tab === "dash") openAdminDashboard();
+            else initLessonEditor();
         }
 
         function getCompletedLessons() {
@@ -7028,13 +7969,16 @@
                                 <!-- Front -->
                                 <div class="absolute inset-0 w-full h-full backface-hidden flex flex-col items-center justify-center p-6 text-center">
                                     <span class="text-xs font-bold text-amber-600 uppercase tracking-widest mb-2">Từ vựng / Cấu trúc</span>
-                                    <h3 id="flashcardFrontText" class="text-xl md:text-2xl font-black text-slate-800">${lesson.flashcards[0].front}</h3>
+                                    <h3 id="flashcardFrontText" class="text-2xl md:text-3xl font-black text-slate-800">${lesson.flashcards[0].front}</h3>
+                                    <p id="flashcardFrontPos" class="text-xs font-semibold text-amber-700 bg-amber-100 px-2.5 py-1 rounded-full mt-3 inline-block">${lesson.flashcards[0].pos || ""}</p>
+                                    <p class="text-[11px] text-slate-400 mt-3"><i class="fa-solid fa-hand-pointer"></i> Bấm vào thẻ để xem nghĩa</p>
                                     <span class="text-xs text-slate-400 mt-4"><i class="fa-solid fa-rotate"></i> Bấm để xem nghĩa</span>
                                 </div>
                                 <!-- Back -->
                                 <div class="absolute inset-0 w-full h-full backface-hidden rotate-y-180 flex flex-col items-center justify-center p-6 text-center bg-brand-900 text-white rounded-2xl">
                                     <span class="text-xs font-bold text-brand-300 uppercase tracking-widest mb-2">Giải thích / Ý nghĩa</span>
-                                    <p id="flashcardBackText" class="text-base md:text-lg font-medium text-slate-100">${lesson.flashcards[0].back}</p>
+                                    <p id="flashcardBackText" class="text-lg md:text-xl font-bold text-white">${lesson.flashcards[0].back}</p>
+                                    <p id="flashcardBackEx" class="text-xs md:text-sm italic text-slate-300 mt-3 px-4">${lesson.flashcards[0].ex ? '“' + lesson.flashcards[0].ex + '”' : ""}</p>
                                     <span class="text-xs text-brand-300 mt-4"><i class="fa-solid fa-rotate"></i> Bấm để lật lại</span>
                                 </div>
                             </div>
@@ -7124,8 +8068,17 @@
         function updateFlashcardView(lesson) {
             isCardFlipped = false;
             document.getElementById("flashcardInner").classList.remove("rotate-y-180");
-            document.getElementById("flashcardFrontText").textContent = lesson.flashcards[currentFlashcardIdx].front;
-            document.getElementById("flashcardBackText").textContent = lesson.flashcards[currentFlashcardIdx].back;
+            const card = lesson.flashcards[currentFlashcardIdx];
+            document.getElementById("flashcardFrontText").textContent = card.front;
+            document.getElementById("flashcardBackText").textContent = card.back;
+
+            const posEl = document.getElementById("flashcardFrontPos");
+            if (posEl) {
+                posEl.textContent = card.pos || "";
+                posEl.style.display = card.pos ? "inline-block" : "none";
+            }
+            const exEl = document.getElementById("flashcardBackEx");
+            if (exEl) exEl.textContent = card.ex ? `“${card.ex}”` : "";
             document.getElementById("flashcardCounter").textContent = `${currentFlashcardIdx + 1} / ${lesson.flashcards.length}`;
         }
 
@@ -7201,12 +8154,8 @@
 
         async function openAdminDashboard() {
             if (!currentUser || currentUser.role !== "admin") return;
-            const modal = document.getElementById("adminModal");
             const body = document.getElementById("dashBody");
             const select = document.getElementById("dashStudentSelect");
-
-            modal.classList.remove("hidden");
-            modal.classList.add("flex");
 
             if (cloud) {
                 body.innerHTML = `<div class="p-12 text-center text-slate-400 text-sm"><i class="fa-solid fa-circle-notch fa-spin text-2xl mb-3 block"></i> Đang tải dữ liệu từ Firebase...</div>`;
@@ -7218,12 +8167,7 @@
             renderAdminDashboard();
         }
 
-        function closeAdminDashboard() {
-            const modal = document.getElementById("adminModal");
-            if (!modal) return;
-            modal.classList.add("hidden");
-            modal.classList.remove("flex");
-        }
+        function closeAdminDashboard() { /* giữ lại để tương thích, không còn modal */ }
 
         function fmtDate(iso) {
             if (!iso) return "—";
@@ -7384,6 +8328,235 @@
             `;
         }
 
+        // ===================== TRÌNH SỬA NỘI DUNG BÀI HỌC =====================
+        let editorLessonId = 1;
+        let editorDraft = null;                 // bản nháp đang chỉnh sửa
+        const ORIGINAL_LESSONS = JSON.parse(JSON.stringify(LESSONS_DATA));   // bản gốc để khôi phục
+
+        function esc(v) {
+            return String(v == null ? "" : v)
+                .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        function editorNotify(msg, type) {
+            const el = document.getElementById("editorStatus");
+            const styles = {
+                ok:   "bg-emerald-50 border-emerald-200 text-emerald-700",
+                err:  "bg-rose-50 border-rose-200 text-rose-700",
+                info: "bg-sky-50 border-sky-200 text-sky-700"
+            };
+            el.className = `text-xs font-semibold px-3 py-2.5 rounded-xl border ${styles[type] || styles.info}`;
+            el.innerHTML = msg;
+            el.classList.remove("hidden");
+            clearTimeout(el._t);
+            el._t = setTimeout(() => el.classList.add("hidden"), 4000);
+        }
+
+        function initLessonEditor() {
+            const select = document.getElementById("editorLessonSelect");
+            select.innerHTML = LESSONS_DATA.map(l => `<option value="${l.id}">${esc(l.title)}</option>`).join("");
+            select.value = editorLessonId;
+            loadLessonIntoEditor();
+        }
+
+        function loadLessonIntoEditor() {
+            editorLessonId = parseInt(document.getElementById("editorLessonSelect").value, 10);
+            const lesson = LESSONS_DATA.find(l => l.id === editorLessonId);
+            editorDraft = JSON.parse(JSON.stringify(lesson));
+            renderLessonEditor();
+        }
+
+        /* Ghi giá trị người dùng gõ vào bản nháp */
+        function editField(path, idx, key, value) {
+            if (path === null) editorDraft[key] = value;
+            else {
+                if (!editorDraft[path]) editorDraft[path] = [];
+                editorDraft[path][idx][key] = key === "answer" ? parseInt(value, 10) : value;
+            }
+        }
+        function editOption(idx, oIdx, value) { editorDraft.quiz[idx].options[oIdx] = value; }
+
+        function addRow(path) {
+            if (!editorDraft[path]) editorDraft[path] = [];
+            const blanks = {
+                vocab:        { word: "", pos: "", meaning: "", ex: "" },
+                grammarNotes: { title: "", content: "" },
+                structures:   { sit: "", expr: "", vn: "" },
+                quiz:         { question: "", options: ["", "", "", ""], answer: 0, explanation: "" }
+            };
+            editorDraft[path].push(JSON.parse(JSON.stringify(blanks[path])));
+            renderLessonEditor();
+        }
+        function removeRow(path, idx) {
+            editorDraft[path].splice(idx, 1);
+            renderLessonEditor();
+        }
+
+        const txt  = "w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/30";
+        const lbl  = "block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1";
+        const card = "bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4";
+
+        function renderLessonEditor() {
+            const d = editorDraft;
+            const body = document.getElementById("editorBody");
+
+            const vocabRows = (d.vocab || []).map((v, i) => `
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 items-start bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <div class="md:col-span-3"><label class="${lbl}">Từ</label>
+                        <input class="${txt}" value="${esc(v.word)}" oninput="editField('vocab',${i},'word',this.value)"></div>
+                    <div class="md:col-span-2"><label class="${lbl}">Từ loại</label>
+                        <input class="${txt}" value="${esc(v.pos)}" oninput="editField('vocab',${i},'pos',this.value)"></div>
+                    <div class="md:col-span-3"><label class="${lbl}">Nghĩa</label>
+                        <input class="${txt}" value="${esc(v.meaning)}" oninput="editField('vocab',${i},'meaning',this.value)"></div>
+                    <div class="md:col-span-3"><label class="${lbl}">Ví dụ</label>
+                        <input class="${txt}" value="${esc(v.ex)}" oninput="editField('vocab',${i},'ex',this.value)"></div>
+                    <div class="md:col-span-1 flex md:justify-center md:pt-5">
+                        <button onclick="removeRow('vocab',${i})" class="text-rose-500 hover:text-rose-700 p-2" title="Xóa"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>`).join("");
+
+            const grammarRows = (d.grammarNotes || []).map((g, i) => `
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+                    <div class="flex gap-2 items-end">
+                        <div class="flex-1"><label class="${lbl}">Tiêu đề mục ngữ pháp</label>
+                            <input class="${txt}" value="${esc(g.title)}" oninput="editField('grammarNotes',${i},'title',this.value)"></div>
+                        <button onclick="removeRow('grammarNotes',${i})" class="text-rose-500 hover:text-rose-700 p-2"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                    <div><label class="${lbl}">Nội dung (dùng được thẻ HTML: &lt;br/&gt;, &lt;strong&gt;, &lt;em&gt;)</label>
+                        <textarea rows="4" class="${txt} font-mono leading-relaxed" oninput="editField('grammarNotes',${i},'content',this.value)">${esc(g.content)}</textarea></div>
+                </div>`).join("");
+
+            const structRows = (d.structures || []).map((st, i) => `
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 items-start bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <div class="md:col-span-3"><label class="${lbl}">Tình huống</label>
+                        <input class="${txt}" value="${esc(st.sit)}" oninput="editField('structures',${i},'sit',this.value)"></div>
+                    <div class="md:col-span-4"><label class="${lbl}">Mẫu câu tiếng Anh</label>
+                        <input class="${txt}" value="${esc(st.expr)}" oninput="editField('structures',${i},'expr',this.value)"></div>
+                    <div class="md:col-span-4"><label class="${lbl}">Nghĩa tiếng Việt</label>
+                        <input class="${txt}" value="${esc(st.vn)}" oninput="editField('structures',${i},'vn',this.value)"></div>
+                    <div class="md:col-span-1 flex md:justify-center md:pt-5">
+                        <button onclick="removeRow('structures',${i})" class="text-rose-500 hover:text-rose-700 p-2"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>`).join("");
+
+            const quizRows = (d.quiz || []).map((q, i) => `
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                    <div class="flex gap-2 items-end">
+                        <div class="flex-1"><label class="${lbl}">Câu ${i + 1}</label>
+                            <input class="${txt}" value="${esc(q.question)}" oninput="editField('quiz',${i},'question',this.value)"></div>
+                        <button onclick="removeRow('quiz',${i})" class="text-rose-500 hover:text-rose-700 p-2"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        ${q.options.map((o, oi) => `
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 text-xs font-bold text-slate-500">${String.fromCharCode(65 + oi)}.</span>
+                                <input class="${txt}" value="${esc(o)}" oninput="editOption(${i},${oi},this.value)">
+                            </div>`).join("")}
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-2">
+                        <div class="md:col-span-3"><label class="${lbl}">Đáp án đúng</label>
+                            <select class="${txt}" onchange="editField('quiz',${i},'answer',this.value)">
+                                ${q.options.map((o, oi) => `<option value="${oi}" ${q.answer === oi ? "selected" : ""}>${String.fromCharCode(65 + oi)}</option>`).join("")}
+                            </select></div>
+                        <div class="md:col-span-9"><label class="${lbl}">Giải thích</label>
+                            <input class="${txt}" value="${esc(q.explanation)}" oninput="editField('quiz',${i},'explanation',this.value)"></div>
+                    </div>
+                </div>`).join("");
+
+            const addBtn = (path, label) => `
+                <button onclick="addRow('${path}')" class="text-xs font-bold text-brand-600 hover:text-brand-800 border border-dashed border-brand-300 hover:border-brand-500 rounded-xl px-4 py-2 w-full transition">
+                    <i class="fa-solid fa-plus"></i> ${label}
+                </button>`;
+
+            const section = (icon, color, title, note, content) => `
+                <div class="${card}">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                            <i class="fa-solid ${icon} text-${color}-600"></i> ${title}
+                        </h3>
+                        ${note ? `<span class="text-[11px] text-slate-400">${note}</span>` : ""}
+                    </div>
+                    ${content}
+                </div>`;
+
+            body.innerHTML = `
+                ${section("fa-circle-info", "slate", "Thông tin chung", "Bài " + d.id, `
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+                        <div class="md:col-span-8"><label class="${lbl}">Tiêu đề bài học</label>
+                            <input class="${txt}" value="${esc(d.title)}" oninput="editField(null,null,'title',this.value)"></div>
+                        <div class="md:col-span-4"><label class="${lbl}">Phân loại</label>
+                            <select class="${txt}" onchange="editField(null,null,'type',this.value)">
+                                <option value="TOPIC" ${d.type === "TOPIC" ? "selected" : ""}>TOPIC (Chủ đề)</option>
+                                <option value="GRAMMAR" ${d.type === "GRAMMAR" ? "selected" : ""}>GRAMMAR (Ngữ pháp)</option>
+                            </select></div>
+                        <div class="md:col-span-12"><label class="${lbl}">Mục tiêu bài học (focus)</label>
+                            <input class="${txt}" value="${esc(d.focus)}" oninput="editField(null,null,'focus',this.value)"></div>
+                        <div class="md:col-span-12"><label class="${lbl}">Đoạn dẫn nhập (không bắt buộc)</label>
+                            <textarea rows="2" class="${txt}" oninput="editField(null,null,'intro',this.value)">${esc(d.intro || "")}</textarea></div>
+                    </div>`)}
+
+                ${section("fa-book", "brand", "Từ vựng", (d.vocab || []).length + " từ · flashcard sẽ tự tạo lại từ danh sách này",
+                    `<div class="space-y-2">${vocabRows}</div>${addBtn("vocab", "Thêm từ vựng")}`)}
+
+                ${section("fa-lightbulb", "purple", "Ngữ pháp", (d.grammarNotes || []).length + " mục",
+                    `<div class="space-y-3">${grammarRows}</div>${addBtn("grammarNotes", "Thêm mục ngữ pháp")}`)}
+
+                ${section("fa-comments", "emerald", "Mẫu câu giao tiếp", (d.structures || []).length + " mẫu",
+                    `<div class="space-y-2">${structRows}</div>${addBtn("structures", "Thêm mẫu câu")}`)}
+
+                ${section("fa-circle-question", "indigo", "Câu hỏi trắc nghiệm", (d.quiz || []).length + " câu",
+                    `<div class="space-y-3">${quizRows}</div>${addBtn("quiz", "Thêm câu hỏi")}`)}
+            `;
+        }
+
+        /* Lưu bản nháp -> áp dụng ngay + đẩy lên Firebase */
+        async function saveLessonFromEditor() {
+            const d = editorDraft;
+
+            if (!d.title.trim()) { editorNotify("Tiêu đề bài học không được để trống.", "err"); return; }
+            const emptyQ = (d.quiz || []).findIndex(q => !q.question.trim() || q.options.some(o => !o.trim()));
+            if (emptyQ >= 0) { editorNotify(`Câu hỏi số ${emptyQ + 1} còn ô trống — vui lòng điền đủ nội dung và 4 đáp án.`, "err"); return; }
+
+            // Flashcard luôn đồng bộ theo từ vựng
+            d.flashcards = (d.vocab || []).map(v => ({ front: v.word, pos: v.pos, back: v.meaning, ex: v.ex }));
+
+            const idx = LESSONS_DATA.findIndex(l => l.id === d.id);
+            LESSONS_DATA[idx] = JSON.parse(JSON.stringify(d));
+
+            contentOverrides[d.id] = LESSONS_DATA[idx];
+            localStorage.setItem("lesson_overrides_a1", JSON.stringify(contentOverrides));
+
+            if (cloud) {
+                try {
+                    await cloud.saveLessonContent(d.id, LESSONS_DATA[idx]);
+                    editorNotify("<i class='fa-solid fa-circle-check'></i> Đã lưu và đồng bộ lên Firebase. Học viên sẽ thấy nội dung mới khi tải lại trang.", "ok");
+                } catch (err) {
+                    console.error(err);
+                    editorNotify("Đã lưu trên máy này nhưng KHÔNG đồng bộ được lên Firebase. Kiểm tra quy tắc bảo mật Firestore.", "err");
+                }
+            } else {
+                editorNotify("<i class='fa-solid fa-circle-check'></i> Đã lưu trên trình duyệt này (chế độ ngoại tuyến).", "ok");
+            }
+
+            initLessonEditor();
+        }
+
+        /* Khôi phục bài học về nội dung gốc */
+        async function resetLessonContent() {
+            const id = editorLessonId;
+            const original = ORIGINAL_LESSONS.find(l => l.id === id);
+            const idx = LESSONS_DATA.findIndex(l => l.id === id);
+            LESSONS_DATA[idx] = JSON.parse(JSON.stringify(original));
+
+            delete contentOverrides[id];
+            localStorage.setItem("lesson_overrides_a1", JSON.stringify(contentOverrides));
+            if (cloud) {
+                try { await cloud.saveLessonContent(id, null); } catch (err) { console.error(err); }
+            }
+            editorNotify("Đã khôi phục bài học về nội dung gốc.", "info");
+            initLessonEditor();
+        }
+
         // Search & Filter Listeners
         searchInputEl.addEventListener("input", (e) => {
             searchQuery = e.target.value;
@@ -7452,12 +8625,31 @@
             mobileOverlayEl.classList.add("hidden");
         };
 
+        function applyContentOverrides() {
+            Object.keys(contentOverrides).forEach(id => {
+                const idx = LESSONS_DATA.findIndex(l => l.id === parseInt(id, 10));
+                if (idx >= 0 && contentOverrides[id]) LESSONS_DATA[idx] = contentOverrides[id];
+            });
+        }
+
         // ===== Khởi động =====
         async function bootApp() {
             const statusEl = document.getElementById("cloudStatus");
 
             cloud = await window.cloudReady;
             cloudChecked = true;
+
+            // Áp nội dung bài học đã được admin chỉnh sửa
+            if (cloud) {
+                try {
+                    const remote = await cloud.loadAllLessonContent();
+                    if (Object.keys(remote).length) {
+                        contentOverrides = remote;
+                        localStorage.setItem("lesson_overrides_a1", JSON.stringify(contentOverrides));
+                    }
+                } catch (err) { console.warn("[A1] Không tải được nội dung tùy chỉnh:", err); }
+            }
+            applyContentOverrides();
 
             if (cloud) {
                 statusEl.className = "text-[11px] font-semibold px-3 py-2 rounded-xl border bg-emerald-50 border-emerald-200 text-emerald-700 flex items-center gap-2";
