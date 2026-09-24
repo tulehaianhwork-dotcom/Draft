@@ -75,8 +75,9 @@
                     </div>
                 </div>
 
-                <div id="cloudStatus" class="text-[11px] font-semibold px-3 py-2 rounded-xl border bg-slate-50 border-slate-200 text-slate-500 flex items-center gap-2">
-                    <i class="fa-solid fa-circle-notch fa-spin"></i> <span>Đang kết nối máy chủ...</span>
+                <div id="cloudStatus" class="text-[11px] font-semibold px-3 py-2 rounded-xl border bg-sky-50 border-sky-200 text-sky-700 flex items-start gap-2">
+                    <i class="fa-solid fa-shield-halved mt-0.5"></i>
+                    <span>Tiến độ được lưu ngay trên máy này. Đổi máy thì dùng <strong>Mã sao lưu</strong> trong phần Cài đặt.</span>
                 </div>
 
                 <div id="loginError" class="hidden bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold px-3 py-2.5 rounded-xl flex items-center gap-2">
@@ -94,6 +95,68 @@
                     <span>Đăng nhập ngay</span> <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </form>
+        </div>
+    </div>
+
+    <!-- Modal: Mã sao lưu tiến trình -->
+    <div id="backupModal" class="fixed inset-0 bg-slate-950/75 z-[95] hidden items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden">
+
+            <div class="bg-gradient-to-r from-brand-600 to-indigo-600 text-white px-5 py-4 flex items-center justify-between shrink-0">
+                <h3 class="font-bold text-base flex items-center gap-2">
+                    <i class="fa-solid fa-gear"></i> Cài đặt &amp; Sao lưu tiến trình
+                </h3>
+                <button onclick="closeBackupModal()" class="text-white/70 hover:text-white p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-5 space-y-6">
+
+                <!-- Tóm tắt tiến độ -->
+                <div id="backupSummary" class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs text-slate-600"></div>
+
+                <!-- Xuất mã -->
+                <div class="space-y-2">
+                    <h4 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-file-export text-brand-600"></i> Mã sao lưu của bạn
+                    </h4>
+                    <p class="text-[11px] text-slate-500 leading-relaxed">
+                        Sao chép mã này và cất giữ (ghi chú, Zalo, email). Khi đổi máy hoặc xóa trình duyệt, dán mã vào ô bên dưới là lấy lại được toàn bộ tiến độ.
+                    </p>
+                    <textarea id="backupCodeOut" readonly rows="4"
+                        class="w-full bg-slate-900 text-emerald-300 font-mono text-[10px] leading-relaxed rounded-xl p-3 border border-slate-700 resize-none break-all"></textarea>
+                    <div class="flex gap-2">
+                        <button onclick="copyBackupCode()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold py-2.5 rounded-xl transition">
+                            <i class="fa-solid fa-copy"></i> Sao chép mã
+                        </button>
+                        <button onclick="downloadBackupCode()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-4 py-2.5 rounded-xl transition border border-slate-300">
+                            <i class="fa-solid fa-download"></i> Tải file
+                        </button>
+                    </div>
+                </div>
+
+                <hr class="border-slate-200">
+
+                <!-- Nhập mã -->
+                <div class="space-y-2">
+                    <h4 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-file-import text-indigo-600"></i> Khôi phục từ mã
+                    </h4>
+                    <p class="text-[11px] text-slate-500 leading-relaxed">
+                        Dán mã sao lưu vào đây rồi bấm Khôi phục. Tiến độ hiện tại trên máy này sẽ bị ghi đè.
+                    </p>
+                    <textarea id="backupCodeIn" rows="4" placeholder="Dán mã sao lưu vào đây..."
+                        class="w-full bg-white border border-slate-300 rounded-xl p-3 font-mono text-[10px] leading-relaxed text-slate-700 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 resize-none"></textarea>
+                    <button onclick="restoreFromBackupCode()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2.5 rounded-xl transition">
+                        <i class="fa-solid fa-rotate-left"></i> Khôi phục tiến trình
+                    </button>
+                </div>
+
+                <div id="backupMsg" class="hidden text-xs font-semibold px-3 py-2.5 rounded-xl border"></div>
+            </div>
+
+            <div class="border-t border-slate-200 px-5 py-3 text-right shrink-0">
+                <button onclick="closeBackupModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-xl transition">Đóng</button>
+            </div>
         </div>
     </div>
 
@@ -194,7 +257,9 @@
 
         <!-- Sidebar Footer -->
         <div id="sidebarFooter" class="p-3 border-t border-slate-800 text-xs text-slate-500 flex items-center justify-between">
-            <span>Online Workbook</span>
+            <button onclick="openBackupModal()" class="text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 px-2.5 py-1.5 rounded-lg transition flex items-center gap-1.5 font-semibold">
+                <i class="fa-solid fa-gear"></i> Cài đặt
+            </button>
             <button id="resetProgressBtn" class="text-slate-400 hover:text-rose-400 transition flex items-center gap-1">
                 <i class="fa-solid fa-rotate-right"></i> Đặt lại
             </button>
@@ -249,6 +314,24 @@
                         </button>
                     </div>
                 </div>
+                <!-- Nạp dữ liệu học viên từ mã sao lưu -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-2">
+                    <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-file-import text-purple-600"></i> Nạp tiến độ học viên từ mã sao lưu
+                    </h3>
+                    <p class="text-[11px] text-slate-500">
+                        Yêu cầu học viên vào <strong>Cài đặt → Sao chép mã</strong> rồi gửi cho bạn. Dán mã vào đây để xem toàn bộ tiến độ và điểm số của họ.
+                    </p>
+                    <div class="flex flex-col md:flex-row gap-2">
+                        <textarea id="adminCodeIn" rows="2" placeholder="Dán mã sao lưu của học viên..."
+                            class="flex-1 bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-mono text-[10px] text-slate-700 focus:outline-none focus:border-purple-500 resize-none"></textarea>
+                        <button onclick="adminImportCode()" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition shrink-0">
+                            <i class="fa-solid fa-magnifying-glass-chart"></i> Xem tiến độ
+                        </button>
+                    </div>
+                    <div id="adminCodeMsg" class="hidden text-xs font-semibold px-3 py-2 rounded-lg border"></div>
+                </div>
+
                 <div id="dashBody" class="space-y-5"></div>
             </section>
 
@@ -277,162 +360,6 @@
         </div>
 
     </main>
-
-    <!-- ============ CẤU HÌNH FIREBASE ============ -->
-    <script>
-        /* ⚠️ DÁN CẤU HÌNH FIREBASE CỦA BẠN VÀO ĐÂY
-           Lấy tại: Firebase Console > Project settings > Your apps > Web app > SDK setup and configuration
-           Nếu để nguyên các giá trị PASTE_... bên dưới, hệ thống sẽ tự chạy ở CHẾ ĐỘ NGOẠI TUYẾN
-           (lưu trên trình duyệt như cũ) để bạn vẫn dùng được file. */
-        window.FIREBASE_CONFIG = {
-            apiKey:            "PASTE_API_KEY",
-            authDomain:        "PASTE_PROJECT_ID.firebaseapp.com",
-            projectId:         "PASTE_PROJECT_ID",
-            storageBucket:     "PASTE_PROJECT_ID.appspot.com",
-            messagingSenderId: "PASTE_SENDER_ID",
-            appId:             "PASTE_APP_ID"
-        };
-
-        /* Tên miền ảo dùng để ánh xạ username -> email của Firebase Auth.
-           Ví dụ: username "hocvien1" => tài khoản "hocvien1@a1course.app" */
-        window.AUTH_EMAIL_DOMAIN = "a1course.app";
-
-        window.cloudReady = new Promise(resolve => { window.__resolveCloud = resolve; });
-    </script>
-
-    <!-- ============ LỚP KẾT NỐI FIREBASE ============ -->
-    <script type="module">
-        const cfg = window.FIREBASE_CONFIG || {};
-        const configured = cfg.apiKey && !String(cfg.apiKey).startsWith("PASTE_");
-
-        if (!configured) {
-            console.warn("[A1] Chưa cấu hình Firebase -> chạy chế độ ngoại tuyến (localStorage).");
-            window.__resolveCloud(null);
-        } else {
-            try {
-                const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
-                const {
-                    getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence
-                } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js");
-                const {
-                    getFirestore, doc, setDoc, getDoc, collection, getDocs, addDoc, query, where, orderBy, serverTimestamp
-                } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
-
-                const app  = initializeApp(cfg);
-                const auth = getAuth(app);
-                const db   = getFirestore(app);
-                await setPersistence(auth, browserLocalPersistence);
-
-                const DOMAIN   = window.AUTH_EMAIL_DOMAIN || "a1course.app";
-                const toEmail  = u => `${u}@${DOMAIN}`;
-                const toUser   = e => (e || "").split("@")[0];
-                const PROGRESS = "courseA1_progress";
-                const SUBS     = "courseA1_submissions";
-
-                async function resolveRole(username, uid) {
-                    try {
-                        const snap = await getDoc(doc(db, "courseA1_users", uid));
-                        if (snap.exists() && snap.data().role) return snap.data().role;
-                    } catch (e) { /* bỏ qua, dùng quy ước bên dưới */ }
-                    return username === "admin" ? "admin" : "student";
-                }
-
-                const api = {
-                    enabled: true,
-
-                    /* Đăng nhập bằng username + password */
-                    async login(username, password) {
-                        const cred = await signInWithEmailAndPassword(auth, toEmail(username), password);
-                        const role = await resolveRole(username, cred.user.uid);
-                        return { username, role, uid: cred.user.uid };
-                    },
-
-                    async logout() { try { await signOut(auth); } catch (e) {} },
-
-                    /* Khôi phục phiên đăng nhập sau khi tải lại trang */
-                    restoreSession() {
-                        return new Promise(resolve => {
-                            const off = onAuthStateChanged(auth, async user => {
-                                off();
-                                if (!user) return resolve(null);
-                                const username = toUser(user.email);
-                                const role = await resolveRole(username, user.uid);
-                                resolve({ username, role, uid: user.uid });
-                            });
-                        });
-                    },
-
-                    /* Tải dữ liệu học tập của 1 học viên */
-                    async loadUser(username) {
-                        const out = { completed: [], activity: { views: {}, lastActive: null, firstActive: null }, submissions: [] };
-                        const snap = await getDoc(doc(db, PROGRESS, username));
-                        if (snap.exists()) {
-                            const d = snap.data();
-                            out.completed = d.completed || [];
-                            out.activity  = { views: d.views || {}, lastActive: d.lastActive || null, firstActive: d.firstActive || null };
-                        }
-                        const qs = await getDocs(query(collection(db, SUBS), where("username", "==", username)));
-                        qs.forEach(x => out.submissions.push(x.data()));
-                        out.submissions.sort((a, b) => String(a.isoTime).localeCompare(String(b.isoTime)));
-                        return out;
-                    },
-
-                    /* Tải toàn bộ dữ liệu cho dashboard admin */
-                    async loadAll() {
-                        const progress = {}, activity = {}, submissions = [];
-                        const ps = await getDocs(collection(db, PROGRESS));
-                        ps.forEach(x => {
-                            const d = x.data();
-                            progress[x.id] = d.completed || [];
-                            activity[x.id] = { views: d.views || {}, lastActive: d.lastActive || null, firstActive: d.firstActive || null };
-                        });
-                        const ss = await getDocs(collection(db, SUBS));
-                        ss.forEach(x => submissions.push(x.data()));
-                        submissions.sort((a, b) => String(a.isoTime).localeCompare(String(b.isoTime)));
-                        return { progress, activity, submissions };
-                    },
-
-                    async saveProgress(username, completed, activity) {
-                        await setDoc(doc(db, PROGRESS, username), {
-                            username,
-                            completed: completed || [],
-                            views: (activity && activity.views) || {},
-                            lastActive: (activity && activity.lastActive) || null,
-                            firstActive: (activity && activity.firstActive) || null,
-                            updatedAt: serverTimestamp()
-                        }, { merge: true });
-                    },
-
-                    /* Nội dung bài học do admin chỉnh sửa */
-                    async saveLessonContent(lessonId, data) {
-                        const ref = doc(db, "courseA1_content", String(lessonId));
-                        if (data === null) await setDoc(ref, { lessonId, deleted: true, updatedAt: serverTimestamp() });
-                        else await setDoc(ref, { lessonId, data, deleted: false, updatedAt: serverTimestamp() });
-                    },
-
-                    async loadAllLessonContent() {
-                        const out = {};
-                        const qs = await getDocs(collection(db, "courseA1_content"));
-                        qs.forEach(x => {
-                            const d = x.data();
-                            if (!d.deleted && d.data) out[String(d.lessonId)] = d.data;
-                        });
-                        return out;
-                    },
-
-                    async addSubmission(sub) {
-                        await addDoc(collection(db, SUBS), { ...sub, createdAt: serverTimestamp() });
-                    }
-                };
-
-                window.__resolveCloud(api);
-                console.info("[A1] Đã kết nối Firebase.");
-            } catch (err) {
-                console.error("[A1] Lỗi kết nối Firebase, chuyển sang chế độ ngoại tuyến:", err);
-                window.__resolveCloud(null);
-            }
-        }
-    </script>
 
     <script>
         // Comprehensive 24 Lessons Database with Grammar, Flashcards & Interactive Quizzes
@@ -7527,9 +7454,8 @@
             localStorage.removeItem("current_user_a1");
         }
         let allActivity = JSON.parse(localStorage.getItem("all_user_activity_a1") || "{}");
-        let cloud = null;            // API Firebase, null = chế độ ngoại tuyến
+        const cloud = null;          // Không dùng máy chủ — dữ liệu lưu trên máy, đồng bộ bằng Mã sao lưu
         let contentOverrides = JSON.parse(localStorage.getItem("lesson_overrides_a1") || "{}");
-        let cloudChecked = false;
         let currentLessonId = 1;
         let activeCategoryFilter = "ALL";
         let searchQuery = "";
@@ -7582,25 +7508,10 @@
             submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Đang đăng nhập...`;
 
             try {
-                if (cloud) {
-                    // ---- Đăng nhập qua Firebase Authentication ----
-                    let session;
-                    try {
-                        session = await cloud.login(username, password);
-                    } catch (err) {
-                        showLoginError("Sai tên đăng nhập hoặc mật khẩu.");
-                        return;
-                    }
-                    currentUser = { username: session.username, role: session.role, displayName: session.username };
-                    localStorage.setItem("current_user_a1", JSON.stringify(currentUser));
-                    await loadDataForCurrentUser();
-                } else {
-                    // ---- Chế độ ngoại tuyến ----
-                    const account = ACCOUNTS[username];
-                    if (!account || account.password !== password) { showLoginError(); return; }
-                    currentUser = { username, role: account.role, displayName: account.displayName };
-                    localStorage.setItem("current_user_a1", JSON.stringify(currentUser));
-                }
+                const account = ACCOUNTS[username];
+                if (!account || account.password !== password) { showLoginError(); return; }
+                currentUser = { username, role: account.role, displayName: account.displayName };
+                localStorage.setItem("current_user_a1", JSON.stringify(currentUser));
 
                 initUserSession();
                 loginModalEl.classList.add("hidden");
@@ -7610,42 +7521,9 @@
             }
         };
 
-        /* Nạp dữ liệu học tập từ Firebase vào bộ nhớ tạm */
-        async function loadDataForCurrentUser() {
-            if (!cloud || !currentUser) return;
-            try {
-                if (currentUser.role === "admin") {
-                    const all = await cloud.loadAll();
-                    allProgress = all.progress;
-                    allActivity = all.activity;
-                    allSubmissions = all.submissions;
-                } else {
-                    const d = await cloud.loadUser(currentUser.username);
-                    allProgress[currentUser.username] = d.completed;
-                    allActivity[currentUser.username] = d.activity;
-                    allSubmissions = d.submissions;
-                }
-            } catch (err) {
-                console.error("[A1] Không tải được dữ liệu từ Firebase:", err);
-            }
-        }
+        function syncToCloud() { /* không dùng máy chủ — dữ liệu đã lưu ở localStorage */ }
 
-        /* Đẩy tiến độ + hoạt động của học viên lên Firebase */
-        let syncTimer = null;
-        function syncToCloud() {
-            if (!cloud || !currentUser || currentUser.role !== "student") return;
-            clearTimeout(syncTimer);
-            syncTimer = setTimeout(() => {
-                cloud.saveProgress(
-                    currentUser.username,
-                    allProgress[currentUser.username] || [],
-                    allActivity[currentUser.username] || { views: {}, lastActive: null, firstActive: null }
-                ).catch(err => console.error("[A1] Lỗi lưu tiến độ:", err));
-            }, 600);
-        }
-
-        logoutBtn.onclick = async () => {
-            if (cloud) await cloud.logout();
+        logoutBtn.onclick = () => {
             currentUser = null;
             localStorage.removeItem("current_user_a1");
             closeAdminDashboard();
@@ -8139,7 +8017,6 @@
                 };
                 allSubmissions.push(submissionItem);
                 localStorage.setItem("all_user_submissions_a1", JSON.stringify(allSubmissions));
-                if (cloud) cloud.addSubmission(submissionItem).catch(err => console.error("[A1] Lỗi lưu bài nộp:", err));
             }
         }
 
@@ -8152,15 +8029,9 @@
             return Array.from(set);
         }
 
-        async function openAdminDashboard() {
+        function openAdminDashboard() {
             if (!currentUser || currentUser.role !== "admin") return;
-            const body = document.getElementById("dashBody");
             const select = document.getElementById("dashStudentSelect");
-
-            if (cloud) {
-                body.innerHTML = `<div class="p-12 text-center text-slate-400 text-sm"><i class="fa-solid fa-circle-notch fa-spin text-2xl mb-3 block"></i> Đang tải dữ liệu từ Firebase...</div>`;
-                await loadDataForCurrentUser();
-            }
 
             const students = getStudentUsernames();
             select.innerHTML = students.map(u => `<option value="${u}">${u}</option>`).join("");
@@ -8326,6 +8197,198 @@
                     </div>
                 </div>
             `;
+        }
+
+        // ===================== MÃ SAO LƯU TIẾN TRÌNH =====================
+        const BACKUP_PREFIX = "A1SAVE1:";
+
+        /* Đóng gói dữ liệu của một học viên thành chuỗi mã */
+        function buildBackupPayload(username) {
+            const completed = allProgress[username] || [];
+            const act = allActivity[username] || { views: {}, lastActive: null, firstActive: null };
+            const subs = allSubmissions.filter(x => (x.username || x.email) === username);
+            return {
+                v: 1,
+                u: username,
+                c: completed,
+                w: act.views || {},
+                f: act.firstActive,
+                l: act.lastActive,
+                // nén mỗi bài nộp thành mảng 4 phần tử cho mã ngắn lại
+                // thời gian lưu bằng giây epoch cho mã ngắn gọn
+                s: subs.map(x => [x.lessonId, x.correct, x.total, Math.floor(new Date(x.isoTime).getTime() / 1000) || 0])
+            };
+        }
+
+        function encodeBackup(username) {
+            const json = JSON.stringify(buildBackupPayload(username));
+            const bytes = new TextEncoder().encode(json);
+            let bin = "";
+            bytes.forEach(b => { bin += String.fromCharCode(b); });
+            return BACKUP_PREFIX + btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+        }
+
+        function decodeBackup(code) {
+            let raw = String(code || "").trim().replace(/\s+/g, "");
+            if (!raw) throw new Error("Bạn chưa dán mã.");
+            if (!raw.startsWith(BACKUP_PREFIX)) throw new Error("Mã không hợp lệ — mã đúng phải bắt đầu bằng " + BACKUP_PREFIX);
+            raw = raw.slice(BACKUP_PREFIX.length).replace(/-/g, "+").replace(/_/g, "/");
+            while (raw.length % 4) raw += "=";
+
+            let obj;
+            try {
+                const bin = atob(raw);
+                const bytes = Uint8Array.from(bin, ch => ch.charCodeAt(0));
+                obj = JSON.parse(new TextDecoder().decode(bytes));
+            } catch (e) {
+                throw new Error("Mã bị hỏng hoặc thiếu ký tự. Hãy sao chép lại toàn bộ mã.");
+            }
+            if (!obj || obj.v !== 1 || !obj.u) throw new Error("Mã không đúng định dạng của khóa học này.");
+            return obj;
+        }
+
+        /* Ghi dữ liệu từ mã vào bộ nhớ máy hiện tại */
+        function applyBackup(obj) {
+            const u = obj.u;
+            allProgress[u] = obj.c || [];
+            allActivity[u] = { views: obj.w || {}, firstActive: obj.f || null, lastActive: obj.l || null };
+
+            // bỏ bài nộp cũ của học viên này rồi nạp lại từ mã
+            allSubmissions = allSubmissions.filter(x => (x.username || x.email) !== u);
+            (obj.s || []).forEach(t => {
+                const [lessonId, correct, total, stamp] = t;
+                // tương thích cả mã cũ (chuỗi ISO) lẫn mã mới (giây epoch)
+                const isoTime = typeof stamp === "number"
+                    ? new Date(stamp * 1000).toISOString()
+                    : stamp;
+                const lesson = LESSONS_DATA.find(l => l.id === lessonId);
+                allSubmissions.push({
+                    username: u, email: u, lessonId,
+                    lessonTitle: lesson ? lesson.title : ("Bài " + lessonId),
+                    score: `${correct}/${total}`, correct, total,
+                    percent: total ? Math.round((correct / total) * 100) : 0,
+                    isoTime,
+                    timestamp: isoTime ? new Date(isoTime).toLocaleString("vi-VN") : "—"
+                });
+            });
+
+            localStorage.setItem("all_user_progress_a1", JSON.stringify(allProgress));
+            localStorage.setItem("all_user_activity_a1", JSON.stringify(allActivity));
+            localStorage.setItem("all_user_submissions_a1", JSON.stringify(allSubmissions));
+            return u;
+        }
+
+        function backupNotify(id, msg, type) {
+            const el = document.getElementById(id);
+            const styles = {
+                ok:  "bg-emerald-50 border-emerald-200 text-emerald-700",
+                err: "bg-rose-50 border-rose-200 text-rose-700"
+            };
+            el.className = `text-xs font-semibold px-3 py-2.5 rounded-xl border ${styles[type] || styles.ok}`;
+            el.innerHTML = msg;
+            el.classList.remove("hidden");
+            clearTimeout(el._t);
+            el._t = setTimeout(() => el.classList.add("hidden"), 6000);
+        }
+
+        // ---- Modal của học viên ----
+        function openBackupModal() {
+            if (!currentUser) return;
+            const u = currentUser.username;
+            const code = encodeBackup(u);
+
+            document.getElementById("backupCodeOut").value = code;
+            document.getElementById("backupCodeIn").value = "";
+            document.getElementById("backupMsg").classList.add("hidden");
+
+            const completed = (allProgress[u] || []).length;
+            const subs = allSubmissions.filter(x => (x.username || x.email) === u);
+            document.getElementById("backupSummary").innerHTML = `
+                <div class="flex flex-wrap gap-x-6 gap-y-2">
+                    <span><i class="fa-solid fa-user text-slate-400"></i> Tài khoản: <strong class="text-slate-800">${u}</strong></span>
+                    <span><i class="fa-solid fa-graduation-cap text-brand-500"></i> Hoàn thành: <strong class="text-slate-800">${completed}/${LESSONS_DATA.length} bài</strong></span>
+                    <span><i class="fa-solid fa-pen-to-square text-indigo-500"></i> Lượt làm quiz: <strong class="text-slate-800">${subs.length}</strong></span>
+                    <span><i class="fa-solid fa-file-code text-slate-400"></i> Độ dài mã: <strong class="text-slate-800">${code.length} ký tự</strong></span>
+                </div>`;
+
+            const modal = document.getElementById("backupModal");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+
+            sidebarEl.classList.add("-translate-x-full");
+            mobileOverlayEl.classList.add("hidden");
+        }
+
+        function closeBackupModal() {
+            const modal = document.getElementById("backupModal");
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+        }
+
+        function copyBackupCode() {
+            const ta = document.getElementById("backupCodeOut");
+            ta.select();
+            ta.setSelectionRange(0, 999999);
+            const done = () => backupNotify("backupMsg", "<i class='fa-solid fa-circle-check'></i> Đã sao chép mã. Hãy cất giữ ở nơi an toàn.", "ok");
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(ta.value).then(done).catch(() => { document.execCommand("copy"); done(); });
+            } else {
+                document.execCommand("copy");
+                done();
+            }
+        }
+
+        function downloadBackupCode() {
+            const code = document.getElementById("backupCodeOut").value;
+            const blob = new Blob([code], { type: "text/plain;charset=utf-8" });
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = `ma-sao-luu-${currentUser.username}-${new Date().toISOString().slice(0, 10)}.txt`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+            backupNotify("backupMsg", "<i class='fa-solid fa-circle-check'></i> Đã tải file mã sao lưu về máy.", "ok");
+        }
+
+        function restoreFromBackupCode() {
+            let obj;
+            try {
+                obj = decodeBackup(document.getElementById("backupCodeIn").value);
+            } catch (err) {
+                backupNotify("backupMsg", "<i class='fa-solid fa-circle-exclamation'></i> " + err.message, "err");
+                return;
+            }
+
+            if (obj.u !== currentUser.username) {
+                if (!confirm(`Mã này thuộc tài khoản "${obj.u}", khác với tài khoản đang đăng nhập ("${currentUser.username}").\n\nVẫn khôi phục vào tài khoản hiện tại?`)) return;
+                obj.u = currentUser.username;
+            }
+
+            applyBackup(obj);
+            updateProgressUI();
+            renderLessonsList();
+            renderCurrentLesson();
+            openBackupModal();
+            backupNotify("backupMsg", `<i class='fa-solid fa-circle-check'></i> Khôi phục thành công: ${(obj.c || []).length} bài hoàn thành, ${(obj.s || []).length} lượt làm quiz.`, "ok");
+        }
+
+        // ---- Admin nạp mã của học viên ----
+        function adminImportCode() {
+            let obj;
+            try {
+                obj = decodeBackup(document.getElementById("adminCodeIn").value);
+            } catch (err) {
+                backupNotify("adminCodeMsg", "<i class='fa-solid fa-circle-exclamation'></i> " + err.message, "err");
+                return;
+            }
+
+            const u = applyBackup(obj);
+            document.getElementById("adminCodeIn").value = "";
+            backupNotify("adminCodeMsg", `<i class='fa-solid fa-circle-check'></i> Đã nạp dữ liệu của học viên <strong>${u}</strong>.`, "ok");
+
+            const select = document.getElementById("dashStudentSelect");
+            select.innerHTML = getStudentUsernames().map(x => `<option value="${x}">${x}</option>`).join("");
+            select.value = u;
+            renderAdminDashboard();
         }
 
         // ===================== TRÌNH SỬA NỘI DUNG BÀI HỌC =====================
@@ -8510,7 +8573,7 @@
         }
 
         /* Lưu bản nháp -> áp dụng ngay + đẩy lên Firebase */
-        async function saveLessonFromEditor() {
+        function saveLessonFromEditor() {
             const d = editorDraft;
 
             if (!d.title.trim()) { editorNotify("Tiêu đề bài học không được để trống.", "err"); return; }
@@ -8526,23 +8589,13 @@
             contentOverrides[d.id] = LESSONS_DATA[idx];
             localStorage.setItem("lesson_overrides_a1", JSON.stringify(contentOverrides));
 
-            if (cloud) {
-                try {
-                    await cloud.saveLessonContent(d.id, LESSONS_DATA[idx]);
-                    editorNotify("<i class='fa-solid fa-circle-check'></i> Đã lưu và đồng bộ lên Firebase. Học viên sẽ thấy nội dung mới khi tải lại trang.", "ok");
-                } catch (err) {
-                    console.error(err);
-                    editorNotify("Đã lưu trên máy này nhưng KHÔNG đồng bộ được lên Firebase. Kiểm tra quy tắc bảo mật Firestore.", "err");
-                }
-            } else {
-                editorNotify("<i class='fa-solid fa-circle-check'></i> Đã lưu trên trình duyệt này (chế độ ngoại tuyến).", "ok");
-            }
+            editorNotify("<i class='fa-solid fa-circle-check'></i> Đã lưu nội dung bài học. Nội dung mới áp dụng ngay cho học viên trên máy này.", "ok");
 
             initLessonEditor();
         }
 
         /* Khôi phục bài học về nội dung gốc */
-        async function resetLessonContent() {
+        function resetLessonContent() {
             const id = editorLessonId;
             const original = ORIGINAL_LESSONS.find(l => l.id === id);
             const idx = LESSONS_DATA.findIndex(l => l.id === id);
@@ -8550,9 +8603,6 @@
 
             delete contentOverrides[id];
             localStorage.setItem("lesson_overrides_a1", JSON.stringify(contentOverrides));
-            if (cloud) {
-                try { await cloud.saveLessonContent(id, null); } catch (err) { console.error(err); }
-            }
             editorNotify("Đã khôi phục bài học về nội dung gốc.", "info");
             initLessonEditor();
         }
@@ -8633,43 +8683,8 @@
         }
 
         // ===== Khởi động =====
-        async function bootApp() {
-            const statusEl = document.getElementById("cloudStatus");
-
-            cloud = await window.cloudReady;
-            cloudChecked = true;
-
-            // Áp nội dung bài học đã được admin chỉnh sửa
-            if (cloud) {
-                try {
-                    const remote = await cloud.loadAllLessonContent();
-                    if (Object.keys(remote).length) {
-                        contentOverrides = remote;
-                        localStorage.setItem("lesson_overrides_a1", JSON.stringify(contentOverrides));
-                    }
-                } catch (err) { console.warn("[A1] Không tải được nội dung tùy chỉnh:", err); }
-            }
+        function bootApp() {
             applyContentOverrides();
-
-            if (cloud) {
-                statusEl.className = "text-[11px] font-semibold px-3 py-2 rounded-xl border bg-emerald-50 border-emerald-200 text-emerald-700 flex items-center gap-2";
-                statusEl.innerHTML = `<i class="fa-solid fa-cloud"></i> <span>Đã kết nối Firebase — dữ liệu lưu trên máy chủ.</span>`;
-
-                // Khôi phục phiên đăng nhập cũ
-                const session = await cloud.restoreSession();
-                if (session) {
-                    currentUser = { username: session.username, role: session.role, displayName: session.username };
-                    localStorage.setItem("current_user_a1", JSON.stringify(currentUser));
-                    await loadDataForCurrentUser();
-                } else {
-                    currentUser = null;
-                    localStorage.removeItem("current_user_a1");
-                }
-            } else {
-                statusEl.className = "text-[11px] font-semibold px-3 py-2 rounded-xl border bg-amber-50 border-amber-200 text-amber-700 flex items-center gap-2";
-                statusEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <span>Chế độ ngoại tuyến — dữ liệu chỉ lưu trên trình duyệt này.</span>`;
-            }
-
             initUserSession();
         }
 
